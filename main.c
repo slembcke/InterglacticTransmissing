@@ -91,8 +91,12 @@ void main (void) {
 	music_play(0);
 	
 	while(true){
-		static u8 t0, t2, t3, t_4, t_8;
+		static u8 t0, t2, t3;
 		static u8 c0 = 0, c1 = 3, c2 = 6, c3 = 9;
+		static u8 mask;
+		
+		mask = PPU.mask;
+		// PPU.mask = mask | 0x01;
 		
 		t0 = nesclock();
 		t2 = 2*t0;
@@ -122,6 +126,7 @@ void main (void) {
 		
 		scroll(0, 240 + (SIN_TABLE[t2] >> 2));
 		
+		PPU.mask = mask;
 		ppu_wait_nmi();
 	}
 }
