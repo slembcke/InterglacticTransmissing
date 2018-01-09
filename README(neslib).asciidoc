@@ -1,0 +1,17 @@
+Neslib
+======
+
+This is a ca65 asm library consisting of useful NES functions. It's designed to be
+used with cc65 git master, no need for old runtimes or the like.
+
+Credit for making this goes to Shiru, who published the original in public domain.
+
+However, the original had several bugs and outright bad docs, and Shiru wasn't interested
+in making changes to fix those, so here's a fork.
+
+This is under the zlib license.
+
+Sample usage
+------------
+
+See the cnrom sample at https://github.com/clbr/nes/tree/master/cnrom
