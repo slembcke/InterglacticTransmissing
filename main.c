@@ -71,14 +71,14 @@ void main (void) {
 		
 		
 		vram_adr(NTADR_A(0, 30));
-		for(i = 0; i < 8; ++i) vram_put(0x50);
-		for(i = 0; i < 8; ++i) vram_put(0xFA);
-		for(i = 0; i < 8; ++i) vram_put(0x50);
-		for(i = 0; i < 8; ++i) vram_put(0xFA);
-		for(i = 0; i < 8; ++i) vram_put(0x50);
-		for(i = 0; i < 8; ++i) vram_put(0xFA);
-		for(i = 0; i < 8; ++i) vram_put(0x50);
-		for(i = 0; i < 8; ++i) vram_put(0xFA);
+		vram_fill(0x50, 8);
+		vram_fill(0xFA, 8);
+		vram_fill(0x50, 8);
+		vram_fill(0xFA, 8);
+		vram_fill(0x50, 8);
+		vram_fill(0xFA, 8);
+		vram_fill(0x50, 8);
+		vram_fill(0xFA, 8);
 		
 		// for(iy = 0; iy < 16; ++iy){
 		// 	vram_adr(NTADR_A(12, iy + 8));
