@@ -1,0 +1,4 @@
+*.o
+*.s
+*.nes
+link.log

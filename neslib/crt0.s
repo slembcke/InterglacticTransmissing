@@ -257,7 +257,7 @@ sounds_data:
 	.incbin "music_dpcm.bin"
 .endif
 
-.segment "VECTORTABLE"
+.segment "VECTORS"
 
 	.word nmi	;$fffa vblank nmi
 	.word start	;$fffc reset

@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include <nes.h>
-#include "neslib.h"
+#include "neslib/neslib.h"
 
 typedef uint32_t u32;
 typedef uint16_t u16;

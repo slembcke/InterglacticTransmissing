@@ -12,7 +12,7 @@ INCLUDE = $(CC65_ROOT)/include
 ASMINC = $(CC65_ROOT)/libsrc/nes
 
 SRC = main.c
-ASMSRC = crt0.s chr_rom.s
+ASMSRC = neslib/crt0.s chr_rom.s
 OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o) chr_rom.o
 
 $(ROM): ld65.cfg $(OBJS)
