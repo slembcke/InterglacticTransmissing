@@ -27,15 +27,15 @@ u8 i, ix, iy;
 u8 spr_id;
 
 static const u8 PALETTE[] = {
-	0x21, 0x0F, 0x0F, 0x16,
-	0x00, 0x0F, 0x0F, 0x2d,
-	0x00, 0x0F, 0x0F, 0x2d,
-	0x00, 0x0F, 0x0F, 0x2d,
+	0x21, 0x0F, 0x0F, 0x20,
+	0x00, 0x0F, 0x0F, 0x2C,
+	0x00, 0x0F, 0x0F, 0x2C,
+	0x00, 0x0F, 0x0F, 0x2C,
 	
-	0x00, 0x00, 0x00, 0x16,
-	0x00, 0x00, 0x00, 0x17,
-	0x00, 0x00, 0x00, 0x18,
-	0x00, 0x00, 0x00, 0x19,
+	0x00, 0x00, 0x00, 0x36,
+	0x00, 0x00, 0x00, 0x37,
+	0x00, 0x00, 0x00, 0x38,
+	0x00, 0x00, 0x00, 0x39,
 };
 
 static const char GREET[] = "Global Game Jam 2018!!";
@@ -51,7 +51,7 @@ void main (void) {
 	ppu_off(); {
 		pal_all(PALETTE);
 		
-		vram_adr(NTADR_A(5, 0));
+		vram_adr(NTADR_A(5, 4));
 		for(i = 0; i < sizeof(GREET) - 1; ++i){
 			vram_put(GREET[i]);
 		}
@@ -62,16 +62,22 @@ void main (void) {
 				vram_put((iy << 4) | ix);
 			}
 		}
+		
+		vram_adr(NTADR_A(0, 30));
+		for(i = 0; i < 16; ++i){
+			vram_put(0xFF);
+		}
 	} ppu_on_all();
 	
 	music_play(0);
 	
 	while(true){
-		static u8 t0, t1, t2;
+		static u8 t0, t1, t2, t3;
 		
 		t0 = nesclock();
 		t1 = t0 >> 1;
 		t2 = t1 >> 1;
+		t3 = t2 >> 1;
 		
 		spr_id = 0;
 		spr_id = oam_spr(32 + SIN_TABLE[(t0 +  0) & 0x3F], 120 + SIN_TABLE[(t0 + 16) & 0x3F], '!', (t2 + 0) & 0x03, spr_id);
@@ -85,6 +91,8 @@ void main (void) {
 		oam_hide_rest(spr_id);
 		
 		// sfx_play(0, 0);
+		
+		pal_col(0, 0x01 + (t3 & 0x07));
 		
 		ppu_wait_nmi();
 	}
