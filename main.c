@@ -21,7 +21,8 @@ u8 oam_off;
 #pragma data-name(pop)
 #pragma bss-name (pop)
 
-u8 i, ix, iy = 0;
+u8 i, ix, iy;
+u8 spr_id;
 
 static const u8 PALETTE[] = {
 	0x21, 0x0F, 0x0F, 0x16,
@@ -29,13 +30,20 @@ static const u8 PALETTE[] = {
 	0x00, 0x0F, 0x0F, 0x2d,
 	0x00, 0x0F, 0x0F, 0x2d,
 	
-	0x00, 0x0F, 0x0F, 0x19,
-	0x00, 0x0F, 0x0F, 0x19,
-	0x00, 0x0F, 0x0F, 0x19,
-	0x00, 0x0F, 0x0F, 0x19,
+	0x00, 0x00, 0x00, 0x16,
+	0x00, 0x00, 0x00, 0x17,
+	0x00, 0x00, 0x00, 0x18,
+	0x00, 0x00, 0x00, 0x19,
 };
 
 static const char GREET[] = "Global Game Jam 2018!!";
+
+static const s8 SIN_TABLE[] = {
+	0, 1, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 14, 15, 15, 15, 16, 15,
+	15, 15, 14, 14, 13, 12, 11, 10, 8, 7, 6, 4, 3, 1, 0, -1, -3, -4,
+	-6, -7, -8, -10, -11, -12, -13, -14, -14, -15, -15, -15, -16, -15,
+	-15, -15, -14, -14, -13, -12, -11, -10, -8, -7, -6, -4, -3, -1,
+};
 
 void main (void) {
 	ppu_off(); {
@@ -55,6 +63,23 @@ void main (void) {
 	} ppu_on_all();
 	
 	while(true){
+		static u8 t0, t1, t2;
+		
+		t0 = nesclock();
+		t1 = t0 >> 1;
+		t2 = t1 >> 1;
+		
+		spr_id = 0;
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 +  0) & 0x3F], 120 + SIN_TABLE[(t0 + 16) & 0x3F], '!', (t2 + 0) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 +  8) & 0x3F], 120 + SIN_TABLE[(t0 + 19) & 0x3F], '8', (t2 + 1) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 16) & 0x3F], 120 + SIN_TABLE[(t0 + 22) & 0x3F], '1', (t2 + 2) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 24) & 0x3F], 120 + SIN_TABLE[(t0 + 25) & 0x3F], '0', (t2 + 3) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 32) & 0x3F], 120 + SIN_TABLE[(t0 + 28) & 0x3F], '2', (t2 + 0) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 40) & 0x3F], 120 + SIN_TABLE[(t0 + 31) & 0x3F], 'J', (t2 + 1) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 48) & 0x3F], 120 + SIN_TABLE[(t0 + 34) & 0x3F], 'G', (t2 + 2) & 0x03, spr_id);
+		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 56) & 0x3F], 120 + SIN_TABLE[(t0 + 37) & 0x3F], 'G', (t2 + 3) & 0x03, spr_id);
+		oam_hide_rest(spr_id);
+		
 		ppu_wait_nmi();
 	}
 }
