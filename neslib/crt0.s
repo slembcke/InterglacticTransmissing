@@ -244,11 +244,11 @@ detectNTSC:
 .segment "RODATA"
 
 music_data:
-;	.include "music.sinc"
+.include "../audio/after_the_rain.sinc"
 
 .if(FT_SFX_ENABLE)
 sounds_data:
-;	.include "sounds.sinc"
+	.include "../audio/sounds.sinc"
 .endif
 
 .segment "SAMPLES"

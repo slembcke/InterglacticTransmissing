@@ -21,6 +21,8 @@ u8 oam_off;
 #pragma data-name(pop)
 #pragma bss-name (pop)
 
+extern u16 MUSIC;
+
 u8 i, ix, iy;
 u8 spr_id;
 
@@ -62,6 +64,8 @@ void main (void) {
 		}
 	} ppu_on_all();
 	
+	music_play(0);
+	
 	while(true){
 		static u8 t0, t1, t2;
 		
@@ -79,6 +83,8 @@ void main (void) {
 		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 48) & 0x3F], 120 + SIN_TABLE[(t0 + 34) & 0x3F], 'G', (t2 + 2) & 0x03, spr_id);
 		spr_id = oam_spr(32 + SIN_TABLE[(t0 + 56) & 0x3F], 120 + SIN_TABLE[(t0 + 37) & 0x3F], 'G', (t2 + 3) & 0x03, spr_id);
 		oam_hide_rest(spr_id);
+		
+		// sfx_play(0, 0);
 		
 		ppu_wait_nmi();
 	}
