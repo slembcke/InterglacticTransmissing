@@ -38,6 +38,7 @@ static const u8 PALETTE[] = {
 };
 
 static const char GREET[] = "Global Game Jam 2018!!";
+static const u8 CENTER_PAT[] = {0x00, 0x98, 0x09, 0x09, 0x01, 0x01, 0x8A, 0x8A, 0x18, 0x00};
 
 static const s8 SIN_TABLE[256] = {
 	0, 0, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 9, 10, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 17, 18, 19, 19, 20, 20,
@@ -57,9 +58,11 @@ void main (void) {
 	ppu_off(); {
 		pal_all(PALETTE);
 		
+		// Fill screen with opaque blocks.
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(128, 32*30);
 		
+		// Punch a hole for the GGJ text.
 		vram_adr(NTADR_A(4, 3));
 		vram_fill(0, sizeof(GREET) + 1);
 		vram_adr(NTADR_A(4, 4));
@@ -69,7 +72,12 @@ void main (void) {
 		vram_adr(NTADR_A(5, 4));
 		vram_write(GREET, sizeof(GREET) - 1);
 		
+		// Punch the hole in the middle.
+		for(i = 0; i < 10; ++i){
+			vram_adr(NTADR_A(11, 10 + i)); vram_write(CENTER_PAT, 10);
+		}
 		
+		// Set the palette pattern for the color bars.
 		vram_adr(NTADR_A(0, 30));
 		vram_fill(0x50, 8);
 		vram_fill(0xFA, 8);
@@ -81,7 +89,7 @@ void main (void) {
 		vram_fill(0xFA, 8);
 		
 		// for(iy = 0; iy < 16; ++iy){
-		// 	vram_adr(NTADR_A(12, iy + 8));
+		// 	vram_adr(NTADR_A(8, iy + 8));
 		// 	for(ix = 0; ix < 16; ++ix){
 		// 		vram_put((iy << 4) | ix);
 		// 	}
@@ -103,14 +111,14 @@ void main (void) {
 		t3 = 3*t0;
 		
 		spr_id = 0;
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x00) & 0xFF], 120 + SIN_TABLE[(t2 + 0x40) & 0xFF], '!', 0, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x10) & 0xFF], 120 + SIN_TABLE[(t2 + 0x50) & 0xFF], '8', 1, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x20) & 0xFF], 120 + SIN_TABLE[(t2 + 0x60) & 0xFF], '1', 2, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x30) & 0xFF], 120 + SIN_TABLE[(t2 + 0x70) & 0xFF], '0', 3, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x40) & 0xFF], 120 + SIN_TABLE[(t2 + 0x80) & 0xFF], '2', 0, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x60) & 0xFF], 120 + SIN_TABLE[(t2 + 0xA0) & 0xFF], 'J', 1, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x70) & 0xFF], 120 + SIN_TABLE[(t2 + 0xB0) & 0xFF], 'G', 2, spr_id);
-		spr_id = oam_spr(128 + SIN_TABLE[(t3 + 0x80) & 0xFF], 120 + SIN_TABLE[(t2 + 0xC0) & 0xFF], 'G', 3, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x00) & 0xFF], 116 + SIN_TABLE[(t2 + 0x40) & 0xFF], '!', ((t3 + 0x00 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x10) & 0xFF], 116 + SIN_TABLE[(t2 + 0x50) & 0xFF], '8', ((t3 + 0x10 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x20) & 0xFF], 116 + SIN_TABLE[(t2 + 0x60) & 0xFF], '1', ((t3 + 0x20 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x30) & 0xFF], 116 + SIN_TABLE[(t2 + 0x70) & 0xFF], '0', ((t3 + 0x30 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x40) & 0xFF], 116 + SIN_TABLE[(t2 + 0x80) & 0xFF], '2', ((t3 + 0x40 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x60) & 0xFF], 116 + SIN_TABLE[(t2 + 0xA0) & 0xFF], 'J', ((t3 + 0x60 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x70) & 0xFF], 116 + SIN_TABLE[(t2 + 0xB0) & 0xFF], 'G', ((t3 + 0x70 + 0xC0) >> 2) & 0x20, spr_id);
+		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x80) & 0xFF], 116 + SIN_TABLE[(t2 + 0xC0) & 0xFF], 'G', ((t3 + 0x80 + 0xC0) >> 2) & 0x20, spr_id);
 		oam_hide_rest(spr_id);
 		
 		if((t0 & 0x3) == 0){
