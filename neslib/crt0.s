@@ -5,7 +5,7 @@
 FT_DPCM_OFF			= $c000		;$c000..$ffc0, 64-byte steps
 FT_SFX_STREAMS			= 4		;number of sound effects played at once, 1..4
 
-.define FT_DPCM_ENABLE  0			;undefine to exclude all DMC code
+.define FT_DPCM_ENABLE  1			;undefine to exclude all DMC code
 .define FT_SFX_ENABLE   1			;undefine to exclude all sound effects code
 
 
@@ -251,10 +251,10 @@ sounds_data:
 	.include "../audio/sounds.sinc"
 .endif
 
-.segment "SAMPLES"
+; .segment "SAMPLES"
 
 .if(FT_DPCM_ENABLE)
-	.incbin "music_dpcm.bin"
+	.incbin "../audio/after_the_rain.dmc"
 .endif
 
 .segment "VECTORS"
