@@ -23,9 +23,9 @@ u8 oam_off;
 #pragma bss-name (pop)
 
 static u8 i, ix, iy;
-static u8 spr_id;
+static u8 spr_id, joy;
 
-static const u8 PALETTE[] = {
+static const u8 DEMO_PALETTE[] = {
 	0x0D, 0x0F, 0x0F, 0x30,
 	0x0D, 0x0F, 0x0F, 0x05,
 	0x0D, 0x0F, 0x0F, 0x09,
@@ -54,12 +54,16 @@ static const s8 SIN_TABLE[256] = {
 };
 
 typedef struct {} TAIL_CALL;
-TAIL_CALL demo_start(void);
-TAIL_CALL demo_loop(void);
+TAIL_CALL main_demo_start(void);
+TAIL_CALL text_demo_start(void);
 
-TAIL_CALL demo_start(void){
+TAIL_CALL main_demo_loop(void);
+TAIL_CALL main_demo_start(void){
 	ppu_off(); {
-		pal_all(PALETTE);
+		pal_all(DEMO_PALETTE);
+		oam_clear();
+		
+		vram_inc(0);
 		
 		// Fill screen with opaque blocks.
 		vram_adr(NTADR_A(0, 0));
@@ -80,7 +84,7 @@ TAIL_CALL demo_start(void){
 			vram_adr(NTADR_A(11, 10 + i)); vram_write(CENTER_PAT, 10);
 		}
 		
-		// Set the palette pattern for the color bars.
+		// Set the DEMO_PALETTE pattern for the color bars.
 		vram_adr(NTADR_A(0, 30));
 		vram_fill(0x50, 8);
 		vram_fill(0xFA, 8);
@@ -90,24 +94,17 @@ TAIL_CALL demo_start(void){
 		vram_fill(0xFA, 8);
 		vram_fill(0x50, 8);
 		vram_fill(0xFA, 8);
-		
-		// for(iy = 0; iy < 16; ++iy){
-		// 	vram_adr(NTADR_A(8, iy + 8));
-		// 	for(ix = 0; ix < 16; ++ix){
-		// 		vram_put((iy << 4) | ix);
-		// 	}
-		// }
 	} ppu_on_all();
 	
 	music_play(0);
 	
-	demo_loop();
+	return main_demo_loop();
 }
 
-TAIL_CALL demo_loop(void){
+TAIL_CALL main_demo_loop(void){
 	static u8 t0, t2, t3;
 	static u8 c0 = 0, c1 = 3, c2 = 6, c3 = 9;
-	static u8 mask, joy;
+	static u8 mask;
 	
 	mask = PPU.mask;
 	// PPU.mask = mask | 0x01;
@@ -143,15 +140,75 @@ TAIL_CALL demo_loop(void){
 	joy = joy_read(0);
 	if(JOY_START(joy)){
 		sfx_play(0, 0);
+		delay(60);
+		return text_demo_start();
 	}
 	
 	PPU.mask = mask;
 	ppu_wait_nmi();
-	return demo_loop();
+	return main_demo_loop();
+}
+
+static const u8 TEXT_PALETTE[] = {
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+};
+
+static const char HEX[] = "0123456789ABCDEF";
+
+TAIL_CALL text_demo_start(){
+	ppu_off(); {
+		pal_all(TEXT_PALETTE);
+		oam_clear();
+		
+		vram_inc(0);
+		vram_adr(NAMETABLE_A);
+		vram_fill(0x00, 32*30);
+		
+		vram_adr(NTADR_A(8, 6));
+		for(i = 0; i < 16; ++i) vram_put(HEX[i]);
+		
+		vram_inc(1);
+		vram_adr(NTADR_A(6, 8));
+		for(i = 0; i < 16; ++i) vram_put(HEX[i]);
+		
+		vram_adr(NTADR_A(7, 7));
+		vram_put(0x14);
+		vram_fill(0x0E, 16);
+		vram_inc(0);
+		vram_adr(NTADR_A(8, 7));
+		vram_fill(0x0B, 16);
+		
+		for(iy = 0; iy < 16; ++iy){
+			vram_adr(NTADR_A(8, iy + 8));
+			for(ix = 0; ix < 16; ++ix){
+				vram_put((iy << 4) | ix);
+			}
+		}
+	} ppu_on_all();
+	
+	music_stop();
+	
+	while(true){
+		joy = joy_read(0);
+		if(JOY_START(joy)){
+			sfx_play(0, 0);
+			delay(60);
+			return main_demo_start();
+		}
+		
+		ppu_wait_nmi();
+	}
 }
 
 void main (void) {
 	joy_install(joy_static_stddrv);
 	
-	demo_start();
+	main_demo_start();
 }
