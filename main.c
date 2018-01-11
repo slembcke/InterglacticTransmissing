@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <joystick.h>
 #include <nes.h>
 #include "neslib/neslib.h"
 
@@ -56,6 +57,8 @@ static const s8 SIN_TABLE[256] = {
 
 void main (void) {
 	ppu_off(); {
+		joy_install(joy_static_stddrv);
+		
 		pal_all(PALETTE);
 		
 		// Fill screen with opaque blocks.
@@ -101,7 +104,7 @@ void main (void) {
 	while(true){
 		static u8 t0, t2, t3;
 		static u8 c0 = 0, c1 = 3, c2 = 6, c3 = 9;
-		static u8 mask;
+		static u8 mask, joy;
 		
 		mask = PPU.mask;
 		// PPU.mask = mask | 0x01;
@@ -133,6 +136,11 @@ void main (void) {
 		}
 		
 		scroll(0, 240 + (SIN_TABLE[t2] >> 2));
+		
+		joy = joy_read(0);
+		if(JOY_START(joy)){
+			sfx_play(0, 0);
+		}
 		
 		PPU.mask = mask;
 		ppu_wait_nmi();
