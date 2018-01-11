@@ -24,8 +24,8 @@ u8 oam_off;
 
 extern u16 MUSIC;
 
-u8 i, ix, iy;
-u8 spr_id;
+static u8 i, ix, iy;
+static u8 spr_id;
 
 static const u8 PALETTE[] = {
 	0x0D, 0x0F, 0x0F, 0x30,
@@ -55,10 +55,12 @@ static const s8 SIN_TABLE[256] = {
 	-7, -6, -5, -4, -3, -3, -2, -1, 0,
 };
 
-void main (void) {
+typedef struct {} TAIL_CALL;
+TAIL_CALL demo_start(void);
+TAIL_CALL demo_loop(void);
+
+TAIL_CALL demo_start(void){
 	ppu_off(); {
-		joy_install(joy_static_stddrv);
-		
 		pal_all(PALETTE);
 		
 		// Fill screen with opaque blocks.
@@ -101,48 +103,57 @@ void main (void) {
 	
 	music_play(0);
 	
-	while(true){
-		static u8 t0, t2, t3;
-		static u8 c0 = 0, c1 = 3, c2 = 6, c3 = 9;
-		static u8 mask, joy;
-		
-		mask = PPU.mask;
-		// PPU.mask = mask | 0x01;
-		
-		t0 = nesclock();
-		t2 = 2*t0;
-		t3 = 3*t0;
-		
-		spr_id = 0;
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x00) & 0xFF], 116 + SIN_TABLE[(t2 + 0x40) & 0xFF], '!', ((t3 + 0x00 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x10) & 0xFF], 116 + SIN_TABLE[(t2 + 0x50) & 0xFF], '8', ((t3 + 0x10 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x20) & 0xFF], 116 + SIN_TABLE[(t2 + 0x60) & 0xFF], '1', ((t3 + 0x20 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x30) & 0xFF], 116 + SIN_TABLE[(t2 + 0x70) & 0xFF], '0', ((t3 + 0x30 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x40) & 0xFF], 116 + SIN_TABLE[(t2 + 0x80) & 0xFF], '2', ((t3 + 0x40 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x60) & 0xFF], 116 + SIN_TABLE[(t2 + 0xA0) & 0xFF], 'J', ((t3 + 0x60 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x70) & 0xFF], 116 + SIN_TABLE[(t2 + 0xB0) & 0xFF], 'G', ((t3 + 0x70 + 0xC0) >> 2) & 0x20, spr_id);
-		spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x80) & 0xFF], 116 + SIN_TABLE[(t2 + 0xC0) & 0xFF], 'G', ((t3 + 0x80 + 0xC0) >> 2) & 0x20, spr_id);
-		oam_hide_rest(spr_id);
-		
-		if((t0 & 0x3) == 0){
-			++c0; if(c0 >= 12) c0 = 0;
-			++c1; if(c1 >= 12) c1 = 0;
-			++c2; if(c2 >= 12) c2 = 0;
-			++c3; if(c3 >= 12) c3 = 0;
-			pal_col( 3, 0x11 + c0);
-			pal_col( 7, 0x11 + c1);
-			pal_col(11, 0x11 + c2);
-			pal_col(15, 0x11 + c3);
-		}
-		
-		scroll(0, 240 + (SIN_TABLE[t2] >> 2));
-		
-		joy = joy_read(0);
-		if(JOY_START(joy)){
-			sfx_play(0, 0);
-		}
-		
-		PPU.mask = mask;
-		ppu_wait_nmi();
+	demo_loop();
+}
+
+TAIL_CALL demo_loop(void){
+	static u8 t0, t2, t3;
+	static u8 c0 = 0, c1 = 3, c2 = 6, c3 = 9;
+	static u8 mask, joy;
+	
+	mask = PPU.mask;
+	// PPU.mask = mask | 0x01;
+	
+	t0 = nesclock();
+	t2 = 2*t0;
+	t3 = 3*t0;
+	
+	spr_id = 0;
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x00) & 0xFF], 116 + SIN_TABLE[(t2 + 0x40) & 0xFF], '!', ((t3 + 0x00 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x10) & 0xFF], 116 + SIN_TABLE[(t2 + 0x50) & 0xFF], '8', ((t3 + 0x10 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x20) & 0xFF], 116 + SIN_TABLE[(t2 + 0x60) & 0xFF], '1', ((t3 + 0x20 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x30) & 0xFF], 116 + SIN_TABLE[(t2 + 0x70) & 0xFF], '0', ((t3 + 0x30 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x40) & 0xFF], 116 + SIN_TABLE[(t2 + 0x80) & 0xFF], '2', ((t3 + 0x40 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x60) & 0xFF], 116 + SIN_TABLE[(t2 + 0xA0) & 0xFF], 'J', ((t3 + 0x60 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x70) & 0xFF], 116 + SIN_TABLE[(t2 + 0xB0) & 0xFF], 'G', ((t3 + 0x70 + 0xC0) >> 2) & 0x20, spr_id);
+	spr_id = oam_spr(124 + SIN_TABLE[(t3 + 0x80) & 0xFF], 116 + SIN_TABLE[(t2 + 0xC0) & 0xFF], 'G', ((t3 + 0x80 + 0xC0) >> 2) & 0x20, spr_id);
+	oam_hide_rest(spr_id);
+	
+	if((t0 & 0x3) == 0){
+		++c0; if(c0 >= 12) c0 = 0;
+		++c1; if(c1 >= 12) c1 = 0;
+		++c2; if(c2 >= 12) c2 = 0;
+		++c3; if(c3 >= 12) c3 = 0;
+		pal_col( 3, 0x11 + c0);
+		pal_col( 7, 0x11 + c1);
+		pal_col(11, 0x11 + c2);
+		pal_col(15, 0x11 + c3);
 	}
+	
+	scroll(0, 240 + (SIN_TABLE[t2] >> 2));
+	
+	joy = joy_read(0);
+	if(JOY_START(joy)){
+		sfx_play(0, 0);
+	}
+	
+	PPU.mask = mask;
+	ppu_wait_nmi();
+	return demo_loop();
+}
+
+void main (void) {
+	joy_install(joy_static_stddrv);
+	
+	demo_start();
 }
