@@ -22,8 +22,6 @@ u8 oam_off;
 #pragma data-name(pop)
 #pragma bss-name (pop)
 
-extern u16 MUSIC;
-
 static u8 i, ix, iy;
 static u8 spr_id;
 
