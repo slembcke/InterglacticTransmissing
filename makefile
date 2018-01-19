@@ -13,7 +13,7 @@ ASMINC = $(CC65_ROOT)/libsrc/nes
 
 SRC = main.c
 ASMSRC = neslib/crt0.s chr_rom.s
-OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o) chr_rom.o
+OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o)
 
 $(ROM): ld65.cfg $(OBJS)
 	$(LD) -C ld65.cfg $(OBJS) nes.lib -m link.log -o $@

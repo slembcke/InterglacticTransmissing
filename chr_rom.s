@@ -1,3 +1,5 @@
 .segment "CHRROM"
-.include "neschar.inc"
-; .incbin "alpha.chr"
+.incbin "sprites0.chr"
+.incbin "sprites1.chr"
+.incbin "tiles0.chr"
+.incbin "tiles1.chr"
