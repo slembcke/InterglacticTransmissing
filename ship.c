@@ -92,7 +92,7 @@ static const u8 * const SHIP_DIRECTIONS[] = {
 	NULL,
 };
 
-Ship SHIP;
+Ship SHIP[2];
 
 #define SHIP_SPEED 512
 #define SHIP_ACCEL 32
@@ -103,45 +103,52 @@ Ship SHIP;
 #define BOUNDS_B (224 << 8)
 
 void ship_init(void){
-	SHIP.msprite = SHIP_UP_MSPRITE;
-	SHIP.x = SHIP.y = (128 << 8);
-	SHIP.vx = SHIP.vy = 0;
+	SHIP[0].msprite = SHIP_UP_MSPRITE;
+	SHIP[0].x = SHIP[0].y = (112 << 8);
+	SHIP[0].vx = SHIP[0].vy = 0;
+	
+	SHIP[1].msprite = SHIP_UP_MSPRITE;
+	SHIP[1].x = SHIP[1].y = (144 << 8);
+	SHIP[1].vx = SHIP[1].vy = 0;
 }
 
-void ship_update(void){
+void ship_update(u8 joy, u8 ship_idx){
 	static const u8 *msprite;
+	static Ship ship;
+	ship = SHIP[ship_idx];
 	
-	msprite = SHIP_DIRECTIONS[joy0 >> 4];
-	if(msprite) SHIP.msprite = msprite;
+	msprite = SHIP_DIRECTIONS[joy >> 4];
+	if(msprite) ship.msprite = msprite;
 	
-	SHIP.dx = (JOY_LEFT(joy0) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy0) ? SHIP_SPEED : 0);
-	SHIP.dy = (JOY_UP(joy0) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy0) ? SHIP_SPEED : 0);
+	ship.dx = (JOY_LEFT(joy) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy) ? SHIP_SPEED : 0);
+	ship.dy = (JOY_UP(joy) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy) ? SHIP_SPEED : 0);
 	
-	SHIP.vx = SHIP.vx + CLAMP(SHIP.dx - SHIP.vx, -SHIP_ACCEL, SHIP_ACCEL);
-	SHIP.vy = SHIP.vy + CLAMP(SHIP.dy - SHIP.vy, -SHIP_ACCEL, SHIP_ACCEL);
+	ship.vx = ship.vx + CLAMP(ship.dx - ship.vx, -SHIP_ACCEL, SHIP_ACCEL);
+	ship.vy = ship.vy + CLAMP(ship.dy - ship.vy, -SHIP_ACCEL, SHIP_ACCEL);
 	
-	SHIP.x += SHIP.vx;
-	SHIP.y += SHIP.vy;
+	ship.x += ship.vx;
+	ship.y += ship.vy;
 	
-	if(SHIP.x < BOUNDS_L){
-		SHIP.vx = abs(SHIP.vx >> 1);
-		SHIP.x = BOUNDS_L;
+	if(ship.x < BOUNDS_L){
+		ship.vx = abs(ship.vx >> 1);
+		ship.x = BOUNDS_L;
 	}
 	
-	if(SHIP.x > BOUNDS_R){
-		SHIP.vx = -abs(SHIP.vx >> 1);
-		SHIP.x = BOUNDS_R;
+	if(ship.x > BOUNDS_R){
+		ship.vx = -abs(ship.vx >> 1);
+		ship.x = BOUNDS_R;
 	}
 	
-	if(SHIP.y < BOUNDS_T){
-		SHIP.vy = abs(SHIP.vy >> 1);
-		SHIP.y = BOUNDS_T;
+	if(ship.y < BOUNDS_T){
+		ship.vy = abs(ship.vy >> 1);
+		ship.y = BOUNDS_T;
 	}
 	
-	if(SHIP.y > BOUNDS_B){
-		SHIP.vy = -abs(SHIP.vy >> 1);
-		SHIP.y = BOUNDS_B;
+	if(ship.y > BOUNDS_B){
+		ship.vy = -abs(ship.vy >> 1);
+		ship.y = BOUNDS_B;
 	}
 	
-	oam_meta_spr_pal((SHIP.x >> 8), (SHIP.y >> 8), 0, SHIP.msprite);
+	oam_meta_spr_pal((ship.x >> 8), (ship.y >> 8), ship_idx, ship.msprite);
+	SHIP[ship_idx] = ship;
 }

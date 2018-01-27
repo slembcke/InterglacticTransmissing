@@ -6,7 +6,7 @@
 struct {
     u8 head_x, head_y;
     u8 dirs_available;
-    enum {UP, DOWN, LEFT, RIGHT, STILL} state;
+    enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
 } state;
 
 
@@ -17,9 +17,19 @@ struct {
 
 #define BIG_TILE_UPDATE_SIZE 10
 #define BIG_TILE_MAX_COUNT 4
+#define POW(x) (0x0001 << (x))
 
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
 u8 up_i = 0;
+u8 block_lu[2][2];
+u16 collision_map[16];
+const u16 pow2[16] = {
+    POW(0), POW(1), POW(2), POW(3), POW(4), POW(5), POW(6), POW(7),
+    POW(8), POW(9), POW(10), POW(11), POW(12), POW(13), POW(14), POW(15)
+};
+u8 parse_tile(u8 i, u8 j, u8 c) {
+    return c;
+}
 
 void set_tile(u8 x, u8 y, u8 c) {
     u16 tile_hi;
@@ -36,14 +46,14 @@ void set_tile(u8 x, u8 y, u8 c) {
     (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
     (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
     (up_buff + 2)[up_i] = 2;
-    (up_buff + 3)[up_i] = c;
-    (up_buff + 4)[up_i] = c;
+    (up_buff + 3)[up_i] = parse_tile(0, 0, c);
+    (up_buff + 4)[up_i] = parse_tile(0, 1, c);
 
     (up_buff + 5)[up_i] = NT_UPD_HORZ | (tile_lo>>8)&0xFF;
     (up_buff + 6)[up_i] = (tile_lo>>0)&0xFF;
     (up_buff + 7)[up_i] = 2;
-    (up_buff + 8)[up_i] = c;
-    (up_buff + 9)[up_i] = c;
+    (up_buff + 8)[up_i] = parse_tile(1, 0, c);
+    (up_buff + 9)[up_i] = parse_tile(1, 1, c);
 
     up_i+= BIG_TILE_UPDATE_SIZE;
 
@@ -76,30 +86,44 @@ void set_state(u32 new_state)
 }
 
 void find_dirs_avail(void) {
+    u16 row=0;
+    u16 mask, left, right, above, below;
+
+    row = collision_map[state.head_y];
+    mask = pow2[state.head_x];
+    left = mask >> 1;
+    left &= row;
+    right = mask << 1;
+    right &= row;
+    above = (collision_map-1)[state.head_y];
+    below = (collision_map+1)[state.head_y];
+    
     state.dirs_available = 0;
-    if(state.head_y>MIN_COORD){
-        state.dirs_available |= (0x1<<UP);
+    
+    if((above&mask)==0){
+        state.dirs_available |= (pow2[EVENT_UP]);
     }
-    if(state.head_y<MAX_COORD-1){
-        state.dirs_available |= (0x1<<DOWN);
+    if((below&mask)==0){
+        state.dirs_available |= (pow2[EVENT_DW]);
     }
-    if(state.head_x>MIN_COORD){
-        state.dirs_available |= (0x1<<LEFT);
+    if(left==0){
+        state.dirs_available |= (pow2[EVENT_LF]);
     }
-    if(state.head_x<MAX_COORD){
-        state.dirs_available |= (0x1<<RIGHT);
+    if(right==0){
+        state.dirs_available |= (pow2[EVENT_RT]);
     }
 }
 
+const char HEX[] = "0123456789ABCDEF";
 
 void snake_task(void) {
-    find_dirs_avail();
-    if(!(state.dirs_available & (0x1<<state.state)))
+    if(!(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
     }
     else {
         set_tile(state.head_x, state.head_y, '#');
+        collision_map[state.head_y] |= pow2[state.head_x];
         if(state.state==DOWN) {
             state.head_y += 1;
         }
@@ -112,13 +136,40 @@ void snake_task(void) {
         if(state.state==LEFT) {
             state.head_x -= 1;
         }
+        find_dirs_avail();
         set_tile(state.head_x, state.head_y, '^');
     }
 }
 
 void snake_init(void) {
-    state.head_x = 8;
-    state.head_y = 8;
+    u8 i=0;
+    u16 row=0x01, mask=0;
+    u8 x=0,y=0;
+    collision_map[0] = 0xFFFF; //map border
+    collision_map[1] = 0xFFFF; //map border
+    collision_map[14] = 0xFFFF; //map border
+    collision_map[15] = 0xFFFF; //map border
+    for(i=0;i<15;i++) {
+        //TODO
+        //Init pseudorandom number
+        x = (i*999)&0xF;
+        row = pow2[x]; 
+        row |= 0x8001; //map border
+        collision_map[i] |= row;
+    }
+    for(x=0;x<16;x++) {
+        for(y=0;y<15;y++) {
+            mask = pow2[x];
+            if((collision_map[y]&mask)==mask) {
+                vram_adr(NTADR_A(x<<1, y<<1));
+                vram_fill('+', 2);
+                vram_adr(NTADR_A(x<<1, (y<<1)+1));
+                vram_fill('+', 2);                
+            }
+        }
+    }
+    state.head_x = 11;
+    state.head_y = 3;
     state.state = STILL;
     find_dirs_avail();
 
@@ -151,13 +202,11 @@ void snake_event(u8 ship_x_raw, u8 ship_y_raw, s16 ship_vx, s16 ship_vy)
     u8 ship_y;
     u8 dir;
 
-    find_dirs_avail();
     ship_y = ship_y_raw/8;
     ship_x = ship_x_raw/8;
     dir = get_dir(ship_vx, ship_vy);
     if(ship_x==state.head_x && ship_y==state.head_y) {
-            set_tile(ship_x, ship_y, '*');
-        if((0x1<<dir)&state.dirs_available) {
+        if((pow2[dir])&state.dirs_available) {
             if(dir==EVENT_DW){
                 set_state(DOWN);
             }
