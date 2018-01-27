@@ -1,3 +1,6 @@
+#ifndef main_h__
+#define main_h__
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -35,3 +38,5 @@ extern Ship SHIP;
 
 void ship_init(void);
 void ship_update(void);
+
+#endif main_h__

@@ -5,6 +5,7 @@
 #include "neslib/neslib.h"
 
 #include "main.h"
+#include "snake.h"
 
 u8 i, ix, iy;
 u8 joy0;
@@ -33,13 +34,14 @@ TAIL_CALL game_loop_start(void){
 		vram_inc(0);
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
-		
+
 		oam_clear();
 	} ppu_on_all();
 	
 	music_play(0);
 	
 	ship_init();
+	snake_init();
 	
 	while(true){
 		static u8 mask;
@@ -51,11 +53,18 @@ TAIL_CALL game_loop_start(void){
 		
 		joy0 = joy_read(0);
 		
+		// if(JOY_START(joy0)){
+		// 	snake_event(ship_x(), ship_y(), EVENT_DW);
+		// }
+		snake_event(SHIP.x>>8, SHIP.y>>8, SHIP.vx, SHIP.vy);
 		ship_update();
+		snake_task();
 		
 		oam_hide_rest(spr_id);
+		snake_draw_task();
 		PPU.mask = mask;
 		ppu_wait_nmi();
+		snake_draw_post();
 	}
 	
 	return TERMINATOR();

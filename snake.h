@@ -8,6 +8,7 @@
 #include <joystick.h>
 #include <nes.h>
 #include "neslib/neslib.h"
+#include "main.h"
 
 /*
 Send us events from main like this
@@ -35,6 +36,7 @@ Send us events from main like this
 extern void snake_init(void);
 extern void snake_task(void);
 extern void snake_draw_task(void);
-extern void snake_event(unsigned char x, unsigned char y, unsigned char dir);
+extern void snake_draw_post(void);
+extern void snake_event(u8 x, u8 y, s16 vx, s16 vy);
 
 #endif //SNAKE_H__
