@@ -118,11 +118,11 @@ void ship_init(void){
 void ship_update(void){
 	static const u8 *msprite;
 	
-	msprite = SHIP_DIRECTIONS[joy >> 4];
+	msprite = SHIP_DIRECTIONS[joy0 >> 4];
 	if(msprite) Ship.msprite = msprite;
 	
-	Ship.dx = (JOY_LEFT(joy) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy) ? SHIP_SPEED : 0);
-	Ship.dy = (JOY_UP(joy) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy) ? SHIP_SPEED : 0);
+	Ship.dx = (JOY_LEFT(joy0) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy0) ? SHIP_SPEED : 0);
+	Ship.dy = (JOY_UP(joy0) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy0) ? SHIP_SPEED : 0);
 	
 	Ship.vx = Ship.vx + CLAMP(Ship.dx - Ship.vx, -SHIP_ACCEL, SHIP_ACCEL);
 	Ship.vy = Ship.vy + CLAMP(Ship.dy - Ship.vy, -SHIP_ACCEL, SHIP_ACCEL);
@@ -150,5 +150,5 @@ void ship_update(void){
 		Ship.y = BOUNDS_B;
 	}
 	
-	spr_id = oam_meta_spr((Ship.x >> 8), (Ship.y >> 8), spr_id, Ship.msprite);
+	oam_meta_spr_pal((Ship.x >> 8), (Ship.y >> 8), 0, Ship.msprite);
 }

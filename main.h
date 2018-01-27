@@ -13,7 +13,8 @@ typedef int8_t s8;
 typedef struct {} TAIL_CALL;
 
 extern u8 i, ix, iy;
-extern u8 spr_id, joy;
+extern u8 spr_id, joy0, joy1;
+#pragma zpsym("spr_id")
 
 #define CLAMP(x, min, max) MAX(min, MIN(x, max))
 

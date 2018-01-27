@@ -6,16 +6,8 @@
 
 #include "main.h"
 
-#pragma bss-name (push,"ZEROPAGE")
-#pragma data-name (push,"ZEROPAGE")
-
-u8 oam_off;
-
-#pragma data-name(pop)
-#pragma bss-name (pop)
-
 u8 i, ix, iy;
-u8 spr_id, joy;
+u8 joy0;
 
 static const u8 MAIN_PALETTE[] = {
 	0x0D, 0x20, 0x11, 0x16,
@@ -24,13 +16,15 @@ static const u8 MAIN_PALETTE[] = {
 	0x0D, 0x00, 0x10, 0x20,
 	
 	0x0D, 0x20, 0x11, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x20, 0x1A, 0x16,
 	0x0D, 0x00, 0x10, 0x20,
 	0x0D, 0x00, 0x10, 0x20,
 };
 
 // Makes the compiler happy.
 static TAIL_CALL TERMINATOR(void){return TERMINATOR();}
+
+static u8 buffer[564];
 
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
@@ -55,7 +49,7 @@ TAIL_CALL game_loop_start(void){
 		
 		spr_id = 0;
 		
-		joy = joy_read(0);
+		joy0 = joy_read(0);
 		
 		ship_update();
 		
@@ -80,7 +74,7 @@ static const u8 TEXT_PALETTE[] = {
 
 static const char HEX[] = "0123456789ABCDEF";
 
-TAIL_CALL chr_debug(){
+void chr_debug(){
 	ppu_off(); {
 		pal_all(TEXT_PALETTE);
 		oam_clear();

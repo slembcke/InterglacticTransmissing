@@ -11,6 +11,7 @@ FT_SFX_STREAMS			= 4		;number of sound effects played at once, 1..4
 
 
 	.export _exit,__STARTUP__:absolute=1
+	.exportzp _oam_off, _spr_id = _oam_off
 	.import initlib,push0,popa,popax,_main,zerobss,copydata
 
 	; Linker generated symbols
@@ -92,11 +93,13 @@ RLE_HIGH		=TEMP+1
 RLE_TAG			=TEMP+2
 RLE_BYTE		=TEMP+3
 
+_oam_off: .res 1
+
 
 
 .segment "HEADER"
 
-    .byte $4e,$45,$53,$1a
+	.byte $4e,$45,$53,$1a
 	.byte <NES_PRG_BANKS
 	.byte <NES_CHR_BANKS
 	.byte <NES_MIRRORING|(<NES_MAPPER<<4)

@@ -1,5 +1,3 @@
-.importzp _oam_off			;make this ZP variable accessible to assembly code
-
 .segment "CODE"
 
 ;void __fastcall__ oam_clear_fast(void);
