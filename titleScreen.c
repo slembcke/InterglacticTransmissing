@@ -35,6 +35,8 @@ static const char START_TEXT_1[] = "One Player";
 static const char START_TEXT_2[] = "Two Player";
 static const char START_TEXT_3[] = "Credits";
 
+#define STAR_COUNT 20
+u8 starY[STAR_COUNT] = {148, 132, 90, 9, 51, 56, 39, 151, 177, 9, 91, 193, 80, 86, 116, 84, 13, 42, 75, 46};
 u8 start_cursor = 0;
 
 TAIL_CALL title_loop_start(void){
@@ -136,6 +138,10 @@ TAIL_CALL title_loop_start(void){
 		clock1 = (nesclock() & 31) >> 2;
 		// Draw selection cursor:
 		oam_meta_spr_pal( (7 * 8 - 4) + clock1, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
+		for(x = 0; x < STAR_COUNT; ++x){
+			spr_id = oam_spr(x << 4, starY[x], x & 0x01 ? 0x2A : 0x2B, 2, spr_id);
+			starY[x] -= x & 0x01 ? 2 : 4;
+		}
 
 		ppu_wait_nmi();
 
