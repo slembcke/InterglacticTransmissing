@@ -92,14 +92,7 @@ static const u8 * const SHIP_DIRECTIONS[] = {
 	NULL,
 };
 
-static struct {
-	s16 dx, dy;
-	const u8 *msprite;
-	
-	// 8.8 fixed point.
-	u16 x, y;
-	s16 vx, vy;
-} Ship;
+Ship SHIP;
 
 #define SHIP_SPEED 512
 #define SHIP_ACCEL 32
@@ -110,45 +103,45 @@ static struct {
 #define BOUNDS_B (224 << 8)
 
 void ship_init(void){
-	Ship.msprite = SHIP_UP_MSPRITE;
-	Ship.x = Ship.y = (128 << 8);
-	Ship.vx = Ship.vy = 0;
+	SHIP.msprite = SHIP_UP_MSPRITE;
+	SHIP.x = SHIP.y = (128 << 8);
+	SHIP.vx = SHIP.vy = 0;
 }
 
 void ship_update(void){
 	static const u8 *msprite;
 	
 	msprite = SHIP_DIRECTIONS[joy0 >> 4];
-	if(msprite) Ship.msprite = msprite;
+	if(msprite) SHIP.msprite = msprite;
 	
-	Ship.dx = (JOY_LEFT(joy0) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy0) ? SHIP_SPEED : 0);
-	Ship.dy = (JOY_UP(joy0) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy0) ? SHIP_SPEED : 0);
+	SHIP.dx = (JOY_LEFT(joy0) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy0) ? SHIP_SPEED : 0);
+	SHIP.dy = (JOY_UP(joy0) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy0) ? SHIP_SPEED : 0);
 	
-	Ship.vx = Ship.vx + CLAMP(Ship.dx - Ship.vx, -SHIP_ACCEL, SHIP_ACCEL);
-	Ship.vy = Ship.vy + CLAMP(Ship.dy - Ship.vy, -SHIP_ACCEL, SHIP_ACCEL);
+	SHIP.vx = SHIP.vx + CLAMP(SHIP.dx - SHIP.vx, -SHIP_ACCEL, SHIP_ACCEL);
+	SHIP.vy = SHIP.vy + CLAMP(SHIP.dy - SHIP.vy, -SHIP_ACCEL, SHIP_ACCEL);
 	
-	Ship.x += Ship.vx;
-	Ship.y += Ship.vy;
+	SHIP.x += SHIP.vx;
+	SHIP.y += SHIP.vy;
 	
-	if(Ship.x < BOUNDS_L){
-		Ship.vx = abs(Ship.vx >> 1);
-		Ship.x = BOUNDS_L;
+	if(SHIP.x < BOUNDS_L){
+		SHIP.vx = abs(SHIP.vx >> 1);
+		SHIP.x = BOUNDS_L;
 	}
 	
-	if(Ship.x > BOUNDS_R){
-		Ship.vx = -abs(Ship.vx >> 1);
-		Ship.x = BOUNDS_R;
+	if(SHIP.x > BOUNDS_R){
+		SHIP.vx = -abs(SHIP.vx >> 1);
+		SHIP.x = BOUNDS_R;
 	}
 	
-	if(Ship.y < BOUNDS_T){
-		Ship.vy = abs(Ship.vy >> 1);
-		Ship.y = BOUNDS_T;
+	if(SHIP.y < BOUNDS_T){
+		SHIP.vy = abs(SHIP.vy >> 1);
+		SHIP.y = BOUNDS_T;
 	}
 	
-	if(Ship.y > BOUNDS_B){
-		Ship.vy = -abs(Ship.vy >> 1);
-		Ship.y = BOUNDS_B;
+	if(SHIP.y > BOUNDS_B){
+		SHIP.vy = -abs(SHIP.vy >> 1);
+		SHIP.y = BOUNDS_B;
 	}
 	
-	oam_meta_spr_pal((Ship.x >> 8), (Ship.y >> 8), 0, Ship.msprite);
+	oam_meta_spr_pal((SHIP.x >> 8), (SHIP.y >> 8), 0, SHIP.msprite);
 }

@@ -22,5 +22,16 @@ extern u8 spr_id, joy0, joy1;
 #define SPR_FLIP_Y 128
 #define MSPRITE_END 128
 
+typedef struct {
+	s16 dx, dy;
+	const u8 *msprite;
+	
+	// 8.8 fixed point.
+	u16 x, y;
+	s16 vx, vy;
+} Ship;
+
+extern Ship SHIP;
+
 void ship_init(void);
 void ship_update(void);
