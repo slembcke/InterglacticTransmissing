@@ -36,6 +36,15 @@ typedef struct {
 	s16 vx, vy;
 } Ship;
 
+#define DRAWTILE(x,y,tile) vram_adr(NTADR_A(((x)<<1), ((y)<<1)));\
+vram_put(tile);\
+vram_adr(NTADR_A(((x)<<1)+1, ((y)<<1)));\
+vram_put(tile+1);\
+vram_adr(NTADR_A(((x)<<1), ((y)<<1)+1));\
+vram_put(tile + 0x10);\
+vram_adr(NTADR_A(((x)<<1)+1, ((y)<<1)+1));\
+vram_put(tile+0x11);
+
 extern Ship SHIP[2];
 
 TAIL_CALL chr_debug(void);

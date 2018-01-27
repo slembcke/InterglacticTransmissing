@@ -28,8 +28,6 @@ static const u8 SHIP_RIGHT_MSPRITE[] = {
 	MSPRITE_END
 };
 
-#define DRAWTILE(x,y,tile)	 	vram_adr(NTADR_A(x, y));vram_put(tile);vram_adr(NTADR_A(x+1, y));vram_put(tile+1);vram_adr(NTADR_A(x, y+1));vram_put(tile + 0x10);vram_adr(NTADR_A(x+1, y+1));vram_put(tile+0x11);
-
 static const char TITLE_TEXT[] = "Intergalactic Transmissing!";
 static const char START_TEXT_1[] = "Easy";
 static const char START_TEXT_2[] = "Hard";
