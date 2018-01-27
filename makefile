@@ -30,7 +30,10 @@ run: $(ROM)
 %.o: %.s
 	$(AS) $< -I $(ASMINC) -o $@
 
-chr_rom.o: tiles0.chr tiles1.chr sprites0.chr sprites1.chr
+%.chr: %.png
+	tools/png2chr $<
+
+chr_rom.o: tiles.chr sprites.chr
 
 # Cancel built in rule for .c files.
 %.o: %.c

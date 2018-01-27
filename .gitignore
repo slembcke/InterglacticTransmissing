@@ -2,3 +2,7 @@
 *.s
 *.nes
 link.log
+tools/png2chr
+tools/chr2png
+tiles.chr
+sprites.chr
