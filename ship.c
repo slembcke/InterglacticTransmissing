@@ -115,42 +115,26 @@ static struct {
 #define SHIP_SPEED 512
 #define SHIP_ACCEL 32
 
-TAIL_CALL ship_demo_start(){
-	ppu_off(); {
-		pal_all(TEXT_PALETTE);
-		oam_clear();
-		
-		vram_inc(0);
-		vram_adr(NAMETABLE_A);
-		vram_fill(0x00, 32*32);
-	} ppu_on_all();
-	
+void ship_init(void){
 	Ship.msprite = SHIP_UP_MSPRITE;
 	Ship.x = Ship.y = (128 << 8);
 	Ship.vx = Ship.vy = 0;
+}
+
+void ship_update(void){
+	static const u8 *msprite;
 	
-	while(true){
-		static const u8 *msprite;
-		
-		joy = joy_read(0);
-		msprite = SHIP_DIRECTIONS[joy >> 4];
-		if(msprite) Ship.msprite = msprite;
-		
-		Ship.dx = (JOY_LEFT(joy) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy) ? SHIP_SPEED : 0);
-		Ship.dy = (JOY_UP(joy) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy) ? SHIP_SPEED : 0);
-		
-		Ship.vx = Ship.vx + CLAMP(Ship.dx - Ship.vx, -SHIP_ACCEL, SHIP_ACCEL);
-		Ship.vy = Ship.vy + CLAMP(Ship.dy - Ship.vy, -SHIP_ACCEL, SHIP_ACCEL);
-		
-		Ship.x += Ship.vx;
-		Ship.y += Ship.vy;
-		
-		spr_id = 0;
-		spr_id = oam_meta_spr((Ship.x >> 8), (Ship.y >> 8), spr_id, Ship.msprite);
-		oam_hide_rest(spr_id);
-		
-		ppu_wait_nmi();
-	}
+	msprite = SHIP_DIRECTIONS[joy >> 4];
+	if(msprite) Ship.msprite = msprite;
 	
-	return ship_demo_start();
+	Ship.dx = (JOY_LEFT(joy) ? -SHIP_SPEED : 0) + (JOY_RIGHT(joy) ? SHIP_SPEED : 0);
+	Ship.dy = (JOY_UP(joy) ? -SHIP_SPEED : 0) + (JOY_DOWN(joy) ? SHIP_SPEED : 0);
+	
+	Ship.vx = Ship.vx + CLAMP(Ship.dx - Ship.vx, -SHIP_ACCEL, SHIP_ACCEL);
+	Ship.vy = Ship.vy + CLAMP(Ship.dy - Ship.vy, -SHIP_ACCEL, SHIP_ACCEL);
+	
+	Ship.x += Ship.vx;
+	Ship.y += Ship.vy;
+	
+	spr_id = oam_meta_spr((Ship.x >> 8), (Ship.y >> 8), spr_id, Ship.msprite);
 }

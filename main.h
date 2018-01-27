@@ -21,9 +21,5 @@ extern u8 spr_id, joy;
 #define SPR_FLIP_Y 128
 #define MSPRITE_END 128
 
-enum {
-	DIRECTION_UP,
-	DIRECTION_DOWN,
-	DIRECTION_RIGHT,
-	DIRECTION_LEFT,
-} DIRECTION;
+void ship_init(void);
+void ship_update(void);
