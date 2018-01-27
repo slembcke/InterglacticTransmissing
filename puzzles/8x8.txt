@@ -1,0 +1,74 @@
+Puzzle 1 of 2.
+7 ........
+6 ...o....
+5 .....o..
+4 ..o...oo
+3 ..o.oo..
+2 ....oo..
+1 ........
+0 ........
+  01234567
+
+		{puzz:"00000000,00010000,00000100,00100011,00101100,00001100,00000000,00000000", start:[1, 1]},
+=> [0, 16, 4, 35, 44, 12, 0, 0]
+
+ 1) Start at (1, 1). (1 choice)
+ 2) Go up. (4 choices)
+ 3) Go left. (2 choices)
+ 4) Go down. (1 choices)
+ 5) Go right. (1 choices)
+ 6) Go up. (1 choices)
+ 7) Go left. (1 choices)
+ 8) Go down. (1 choices)
+ 9) Go left. (1 choices)
+ 10) Go up. (1 choices)
+ 11) Go right. (1 choices)
+ 12) Go up. (1 choices)
+ 13) Go left. (2 choices)
+ 14) Go up. (1 choices)
+ 15) Go right. (1 choices)
+ 16) Go down. (1 choices)
+ 17) Go left. (1 choices)
+ 18) Go up. (1 choices)
+ 19) Go left. (1 choices)
+ 20) Go down. (1 choices)
+ 21) Go right. (1 choices)
+Puzzle completed.
+Total choices: 26. Total steps: 21. Extra choices: 5.
+Tried 11560 unsolvable puzzles.
+
+
+Puzzle 2 of 2.
+7 ........
+6 ...o....
+5 ........
+4 ....oo..
+3 .o..oo.o
+2 .o.....o
+1 .o......
+0 ........
+  01234567
+
+		{puzz:"00000000,00010000,00000000,00001100,01001101,01000001,01000000,00000000", start:[1, 4]},
+=> [0, 16, 0, 12, 77, 65, 64, 0]
+
+ 1) Start at (1, 4). (1 choice)
+ 2) Go up. (3 choices)
+ 3) Go left. (2 choices)
+ 4) Go down. (1 choices)
+ 5) Go right. (1 choices)
+ 6) Go up. (1 choices)
+ 7) Go left. (1 choices)
+ 8) Go up. (1 choices)
+ 9) Go right. (1 choices)
+ 10) Go down. (1 choices)
+ 11) Go left. (1 choices)
+ 12) Go down. (2 choices)
+ 13) Go left. (1 choices)
+ 14) Go up. (1 choices)
+ 15) Go right. (1 choices)
+ 16) Go up. (1 choices)
+ 17) Go left. (1 choices)
+Puzzle completed.
+Total choices: 21. Total steps: 17. Extra choices: 4.
+Tried 34501 unsolvable puzzles.
