@@ -22,9 +22,6 @@ static const u8 MAIN_PALETTE[] = {
 	0x0D, 0x00, 0x10, 0x20,
 };
 
-// Makes the compiler happy.
-static TAIL_CALL TERMINATOR(void){return TERMINATOR();}
-
 static u8 buffer[564];
 
 TAIL_CALL game_loop_start(void){
@@ -134,5 +131,6 @@ void main (void) {
 	bank_spr(1);
 	
 	// chr_debug();
+	// title_loop_start();
 	game_loop_start();
 }
