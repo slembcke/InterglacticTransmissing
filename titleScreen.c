@@ -31,14 +31,16 @@ static const u8 SHIP_RIGHT_MSPRITE[] = {
 #define DRAWTILE(x,y,tile)	 	vram_adr(NTADR_A(x, y));vram_put(tile);vram_adr(NTADR_A(x+1, y));vram_put(tile+1);vram_adr(NTADR_A(x, y+1));vram_put(tile + 0x10);vram_adr(NTADR_A(x+1, y+1));vram_put(tile+0x11);
 
 static const char TITLE_TEXT[] = "Intergalactic Transmissing!";
-static const char START_TEXT_1[] = "Easy";
-static const char START_TEXT_2[] = "Hard";
+static const char START_TEXT_1[] = "One Player";
+static const char START_TEXT_2[] = "Two Player";
 static const char START_TEXT_3[] = "Credits";
 
 u8 start_cursor = 0;
 
 TAIL_CALL title_loop_start(void){
 	u8 go = 1;
+	u8 x;
+	u8 y;
 
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
@@ -50,8 +52,24 @@ TAIL_CALL title_loop_start(void){
 		oam_clear();
 
 		// Various text on title screen
-		vram_adr(NTADR_A(4, 8));
+		vram_adr(NTADR_A(3, 8));
 		vram_write(TITLE_TEXT, sizeof(TITLE_TEXT) - 1);
+		
+		pal_bg(MAIN_PALETTE + 8);
+		// background tiles:
+		for(x = 0; x < 2; ++x){
+			for(y = 0; y < 2; ++y){
+				const u8 dy = 15;
+				DRAWTILE( 2 + 13*x,		2 + dy * y, 		0x80);
+				DRAWTILE( 7 + 13*x,		3 + dy * y, 		0x82);
+				DRAWTILE( 9 + 13*x,		1 + dy * y, 		0x84);
+				DRAWTILE( 13 + 13*x,	10 + dy * y, 		0x86);
+				DRAWTILE( 2 + 13*x,		6 + dy * y,			0x88);
+				DRAWTILE( 3 + 13*x,		10 + dy * y, 		0xA0);
+				DRAWTILE( 11 + 13*x,	4+ dy * y, 			0xA2);
+				DRAWTILE( 8 + 13*x,		13+ dy * y, 		0x88);
+			}
+		} 
 		
 		// set pallete to 0000 0101. top two of the tile are set to the 4th palette in the main palette above.
 		vram_adr(NTADR_A(8 * 2, 30));
@@ -68,17 +86,6 @@ TAIL_CALL title_loop_start(void){
 		vram_adr(NTADR_A(9, 24));
 		vram_write(START_TEXT_3, sizeof(START_TEXT_3) - 1);
 
-
-		pal_bg(MAIN_PALETTE + 8);
-		// background tiles:
-		DRAWTILE( 2,	2, 0x80);
-		DRAWTILE( 5,	3, 0x82);
-		DRAWTILE( 10,	1, 0x84);
-		DRAWTILE( 13,	10, 0x86);
-		DRAWTILE( 2,	6, 0x88);
-		DRAWTILE( 3,	10, 0xA0);
-		DRAWTILE( 18,	4, 0xA2);
-		DRAWTILE( 16,	10, 0x88);
 
 	} ppu_on_all();
 	
