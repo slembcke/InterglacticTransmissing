@@ -124,6 +124,20 @@ TAIL_CALL chr_debug(){
 	return TERMINATOR();
 }
 
+#define YOU_LOSE 0x8F
+#define YOU_WIN 0x8E
+
+void main_event(u8 event, void * data)
+{
+	if(event==YOU_WIN) {
+		// NO need to handle this
+	}
+	else if(event==YOU_LOSE) {
+		// I guess you lose?
+		// queue lose event or handle
+	}
+}
+
 void main (void) {
 	joy_install(joy_static_stddrv);
 	

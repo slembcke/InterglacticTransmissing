@@ -54,6 +54,7 @@ TAIL_CALL game_loop_start(void);
 
 void ship_init(void);
 void ship_update(u8 joy, u8 ship_idx);
+void main_event(u8, void * data);
 
 TAIL_CALL title_loop_start(void);
 
