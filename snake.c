@@ -95,8 +95,8 @@ void find_dirs_avail(void) {
     left &= row;
     right = mask << 1;
     right &= row;
-    above = collision_map[state.head_y-1];
-    below = collision_map[state.head_y+1];
+    above = (collision_map-1)[state.head_y];
+    below = (collision_map+1)[state.head_y];
     
     state.dirs_available = 0;
     
@@ -106,10 +106,10 @@ void find_dirs_avail(void) {
     if((below&mask)==0){
         state.dirs_available |= (pow2[EVENT_DW]);
     }
-    if(left!=mask>>1){
+    if(left==0){
         state.dirs_available |= (pow2[EVENT_LF]);
     }
-    if(right!=mask<<1){
+    if(right==0){
         state.dirs_available |= (pow2[EVENT_RT]);
     }
 }
