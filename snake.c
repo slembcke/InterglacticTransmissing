@@ -12,21 +12,41 @@ struct {
 
 #define SNAKE_HEAD 0x14
 #define SNAKE_BODY 0x15
-#define MIN_COORD 2
-#define MAX_COORD 15
+#define MIN_COORD 1
+#define MAX_COORD 14
 
-u8 up_buff[32];
-u16 up_i = 0;
+#define BIG_TILE_UPDATE_SIZE 10
+#define BIG_TILE_MAX_COUNT 4
+
+u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
+u8 up_i = 0;
 
 void set_tile(u8 x, u8 y, u8 c) {
-    u16 tile = NTADR_A(x, y);
+    u16 tile_hi;
+    u16 tile_lo;
+
+    if (up_i > (BIG_TILE_UPDATE_SIZE-1)*BIG_TILE_MAX_COUNT) {
+        up_i=0;
+        set_tile(0,0,'!');
+        return;
+    }
+    tile_hi = NTADR_A(x<<1, y<<1);
+    tile_lo = NTADR_A(x<<1, (y<<1)+1);
     
-    up_buff[up_i] = (tile>>8)&0xFF;
-    up_i++;
-    up_buff[up_i] = (tile>>0)&0xFF;
-    up_i++;
-    up_buff[up_i] = c;
-    up_i++;
+    (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
+    (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
+    (up_buff + 2)[up_i] = 2;
+    (up_buff + 3)[up_i] = c;
+    (up_buff + 4)[up_i] = c;
+
+    (up_buff + 5)[up_i] = NT_UPD_HORZ | (tile_lo>>8)&0xFF;
+    (up_buff + 6)[up_i] = (tile_lo>>0)&0xFF;
+    (up_buff + 7)[up_i] = 2;
+    (up_buff + 8)[up_i] = c;
+    (up_buff + 9)[up_i] = c;
+
+    up_i+= BIG_TILE_UPDATE_SIZE;
+
     up_buff[up_i] = NT_UPD_EOF;
 }
 
@@ -60,7 +80,7 @@ void find_dirs_avail(void) {
     if(state.head_y>MIN_COORD){
         state.dirs_available |= (0x1<<UP);
     }
-    if(state.head_y<MAX_COORD){
+    if(state.head_y<MAX_COORD-1){
         state.dirs_available |= (0x1<<DOWN);
     }
     if(state.head_x>MIN_COORD){
@@ -111,7 +131,6 @@ u8 get_dir(s16 ship_vx, s16 ship_vy) {
     u16 mag_x, mag_y;
     mag_x = abs(ship_vx);
     mag_y = abs(ship_vy);
-    set_tile(2,2,'0'+ship_vx);
     if(ship_vx >=0 && mag_x >= mag_y) {
         return RIGHT;
     }
@@ -136,7 +155,6 @@ void snake_event(u8 ship_x_raw, u8 ship_y_raw, s16 ship_vx, s16 ship_vy)
     ship_y = ship_y_raw/8;
     ship_x = ship_x_raw/8;
     dir = get_dir(ship_vx, ship_vy);
-    set_tile(1,1,'0'+dir);
     if(ship_x==state.head_x && ship_y==state.head_y) {
             set_tile(ship_x, ship_y, '*');
         if((0x1<<dir)&state.dirs_available) {

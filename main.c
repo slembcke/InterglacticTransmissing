@@ -53,10 +53,10 @@ TAIL_CALL game_loop_start(void){
 		
 		joy0 = joy_read(0);
 		
-		// if(JOY_START(joy0)){
-		// 	snake_event(ship_x(), ship_y(), EVENT_DW);
-		// }
-		snake_event(SHIP.x>>8, SHIP.y>>8, SHIP.vx, SHIP.vy);
+		if(JOY_START(joy0)){
+			// move snake event in here to trigger from button press
+		}
+		snake_event(SHIP.x>>9, SHIP.y>>9, SHIP.vx, SHIP.vy);
 		ship_update();
 		snake_task();
 		
