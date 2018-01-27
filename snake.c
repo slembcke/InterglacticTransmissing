@@ -20,6 +20,13 @@ struct {
 
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
 u8 up_i = 0;
+u8 block_lu[2][2];
+
+u8 parse_tile(u8 i, u8 j, u8 c) {
+    if(c=='#')
+        return block_lu[i][j];
+    return c;
+}
 
 void set_tile(u8 x, u8 y, u8 c) {
     u16 tile_hi;
@@ -36,14 +43,14 @@ void set_tile(u8 x, u8 y, u8 c) {
     (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
     (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
     (up_buff + 2)[up_i] = 2;
-    (up_buff + 3)[up_i] = c;
-    (up_buff + 4)[up_i] = c;
+    (up_buff + 3)[up_i] = parse_tile(0, 0, c);
+    (up_buff + 4)[up_i] = parse_tile(0, 1, c);
 
     (up_buff + 5)[up_i] = NT_UPD_HORZ | (tile_lo>>8)&0xFF;
     (up_buff + 6)[up_i] = (tile_lo>>0)&0xFF;
     (up_buff + 7)[up_i] = 2;
-    (up_buff + 8)[up_i] = c;
-    (up_buff + 9)[up_i] = c;
+    (up_buff + 8)[up_i] = parse_tile(1, 0, c);
+    (up_buff + 9)[up_i] = parse_tile(1, 1, c);
 
     up_i+= BIG_TILE_UPDATE_SIZE;
 
