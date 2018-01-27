@@ -17,10 +17,16 @@ struct {
 
 #define BIG_TILE_UPDATE_SIZE 10
 #define BIG_TILE_MAX_COUNT 4
+#define POW(x) (0x0001 << (x))
 
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
 u8 up_i = 0;
 u8 block_lu[2][2];
+u16 collision_map[16];
+const u16 pow2[16] = {
+    POW(0), POW(1), POW(2), POW(3), POW(4), POW(5), POW(6), POW(7),
+    POW(8), POW(9), POW(10), POW(11), POW(12), POW(13), POW(14), POW(15)
+};
 
 u8 parse_tile(u8 i, u8 j, u8 c) {
     if(c=='#')
@@ -101,7 +107,7 @@ void find_dirs_avail(void) {
 
 void snake_task(void) {
     find_dirs_avail();
-    if(!(state.dirs_available & (0x1<<state.state)))
+    if(!(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
     }
@@ -164,7 +170,7 @@ void snake_event(u8 ship_x_raw, u8 ship_y_raw, s16 ship_vx, s16 ship_vy)
     dir = get_dir(ship_vx, ship_vy);
     if(ship_x==state.head_x && ship_y==state.head_y) {
             set_tile(ship_x, ship_y, '*');
-        if((0x1<<dir)&state.dirs_available) {
+        if((pow2[dir])&state.dirs_available) {
             if(dir==EVENT_DW){
                 set_state(DOWN);
             }
