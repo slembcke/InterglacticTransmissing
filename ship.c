@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 #include <joystick.h>
 #include <nes.h>
@@ -103,6 +104,11 @@ static struct {
 #define SHIP_SPEED 512
 #define SHIP_ACCEL 32
 
+#define BOUNDS_L ( 16 << 8)
+#define BOUNDS_R (240 << 8)
+#define BOUNDS_T ( 16 << 8)
+#define BOUNDS_B (224 << 8)
+
 void ship_init(void){
 	Ship.msprite = SHIP_UP_MSPRITE;
 	Ship.x = Ship.y = (128 << 8);
@@ -123,6 +129,26 @@ void ship_update(void){
 	
 	Ship.x += Ship.vx;
 	Ship.y += Ship.vy;
+	
+	if(Ship.x < BOUNDS_L){
+		Ship.vx = abs(Ship.vx >> 1);
+		Ship.x = BOUNDS_L;
+	}
+	
+	if(Ship.x > BOUNDS_R){
+		Ship.vx = -abs(Ship.vx >> 1);
+		Ship.x = BOUNDS_R;
+	}
+	
+	if(Ship.y < BOUNDS_T){
+		Ship.vy = abs(Ship.vy >> 1);
+		Ship.y = BOUNDS_T;
+	}
+	
+	if(Ship.y > BOUNDS_B){
+		Ship.vy = -abs(Ship.vy >> 1);
+		Ship.y = BOUNDS_B;
+	}
 	
 	spr_id = oam_meta_spr((Ship.x >> 8), (Ship.y >> 8), spr_id, Ship.msprite);
 }
