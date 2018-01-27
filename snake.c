@@ -1,6 +1,7 @@
+#include <stdlib.h>
 
 #include "snake.h"
-#include <stdlib.h>
+#include "levels.h"
 
 #define THROTTLE (4)
 
@@ -155,15 +156,14 @@ void snake_init(void) {
     u8 x=0,y=0;
     collision_map[0] = 0xFFFF; //map border
     collision_map[1] = 0xFFFF; //map border
+    collision_map[2] = 0xFFFF; //map border
+    collision_map[11] = 0xFFFF; //map border
+    collision_map[12] = 0xFFFF; //map border
+    collision_map[13] = 0xFFFF; //map border
     collision_map[14] = 0xFFFF; //map border
     collision_map[15] = 0xFFFF; //map border
-    for(i=0;i<15;i++) {
-        //TODO
-        //Init pseudorandom number
-        x = (i*999)&0xF;
-        row = pow2[x]; 
-        row |= 0x8001; //map border
-        collision_map[i] |= row;
+    for(i=0;i<8;i++) {
+        collision_map[i+3] = level_0[i];
     }
     for(x=0;x<16;x++) {
         for(y=0;y<15;y++) {
@@ -173,8 +173,8 @@ void snake_init(void) {
             }
         }
     }
-    state.head_x = 11;
-    state.head_y = 3;
+    state.head_x = level_0_x + 4;
+    state.head_y = level_0_y + 3;
     state.throttle_ctr = 0;
     state.state = STILL;
     find_dirs_avail();
