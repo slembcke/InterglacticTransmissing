@@ -51,6 +51,7 @@ TAIL_CALL game_loop_start(void){
 		joy1 = joy_read(1);
 		
 		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
+		snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
 		ship_update(joy0, 0);
 		ship_update(joy1, 1);
 		snake_task();
