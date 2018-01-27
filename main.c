@@ -24,8 +24,6 @@ static const u8 MAIN_PALETTE[] = {
 // Makes the compiler happy.
 static TAIL_CALL TERMINATOR(void){return TERMINATOR();}
 
-static u8 buffer[564];
-
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
