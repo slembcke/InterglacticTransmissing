@@ -1,18 +1,10 @@
-#include <stdbool.h>
-#include <stdint.h>
 #include <string.h>
 
 #include <joystick.h>
 #include <nes.h>
 #include "neslib/neslib.h"
 
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t u8;
-
-typedef int32_t s32;
-typedef int16_t s16;
-typedef int8_t s8;
+#include "main.h"
 
 #pragma bss-name (push,"ZEROPAGE")
 #pragma data-name (push,"ZEROPAGE")
@@ -22,8 +14,8 @@ u8 oam_off;
 #pragma data-name(pop)
 #pragma bss-name (pop)
 
-static u8 i, ix, iy;
-static u8 spr_id, joy;
+u8 i, ix, iy;
+u8 spr_id, joy;
 
 static const u8 DEMO_PALETTE[] = {
 	0x0D, 0x0F, 0x0F, 0x30,
@@ -53,9 +45,9 @@ static const s8 SIN_TABLE[256] = {
 	-7, -6, -5, -4, -3, -3, -2, -1, 0,
 };
 
-typedef struct {} TAIL_CALL;
 TAIL_CALL main_demo_start(void);
 TAIL_CALL text_demo_start(void);
+TAIL_CALL ship_demo_start();
 
 TAIL_CALL main_demo_loop(void);
 TAIL_CALL main_demo_start(void){
@@ -150,7 +142,7 @@ TAIL_CALL main_demo_loop(void){
 }
 
 static const u8 TEXT_PALETTE[] = {
-	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x20, 0x11, 0x16,
 	0x0D, 0x00, 0x10, 0x20,
 	0x0D, 0x00, 0x10, 0x20,
 	0x0D, 0x00, 0x10, 0x20,
@@ -210,5 +202,8 @@ TAIL_CALL text_demo_start(){
 void main (void) {
 	joy_install(joy_static_stddrv);
 	
-	main_demo_start();
+	bank_bg(0);
+	bank_spr(1);
+	
+	ship_demo_start();
 }

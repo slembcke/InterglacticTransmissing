@@ -1,5 +1,5 @@
 .segment "CHRROM"
-.incbin "sprites0.chr"
-.incbin "sprites1.chr"
 .incbin "tiles0.chr"
 .incbin "tiles1.chr"
+.incbin "sprites0.chr"
+.incbin "sprites1.chr"

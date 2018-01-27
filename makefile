@@ -11,7 +11,7 @@ CFLAGS = -t nes -Oirs
 INCLUDE = $(CC65_ROOT)/include
 ASMINC = $(CC65_ROOT)/libsrc/nes
 
-SRC = main.c
+SRC = main.c ship.c
 ASMSRC = neslib/crt0.s chr_rom.s
 OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o)
 
@@ -29,6 +29,8 @@ run: $(ROM)
 
 %.o: %.s
 	$(AS) $< -I $(ASMINC) -o $@
+
+chr_rom.s: tiles0.chr tiles1.chr sprites0.chr sprites1.chr
 
 # Cancel built in rule for .c files.
 %.o: %.c
