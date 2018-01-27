@@ -36,6 +36,8 @@ typedef struct {
 	s16 vx, vy;
 } Ship;
 
+#define TILECOORDS(tile,x,y) tile+(y==1?1:0)+(x==1?0x10:0)
+
 #define DRAWTILE(x,y,tile) vram_adr(NTADR_A(((x)<<1), ((y)<<1)));\
 vram_put(tile);\
 vram_adr(NTADR_A(((x)<<1)+1, ((y)<<1)));\

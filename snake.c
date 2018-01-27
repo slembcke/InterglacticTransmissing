@@ -2,9 +2,11 @@
 #include "snake.h"
 #include <stdlib.h>
 
+#define THROTTLE (4)
 
 struct {
     u8 head_x, head_y;
+    u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
 } state;
@@ -46,14 +48,14 @@ void set_tile(u8 x, u8 y, u8 c) {
     (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
     (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
     (up_buff + 2)[up_i] = 2;
-    (up_buff + 3)[up_i] = parse_tile(0, 0, c);
-    (up_buff + 4)[up_i] = parse_tile(0, 1, c);
+    (up_buff + 3)[up_i] = TILECOORDS(c,0,0);
+    (up_buff + 4)[up_i] = TILECOORDS(c,0,1);
 
     (up_buff + 5)[up_i] = NT_UPD_HORZ | (tile_lo>>8)&0xFF;
     (up_buff + 6)[up_i] = (tile_lo>>0)&0xFF;
     (up_buff + 7)[up_i] = 2;
-    (up_buff + 8)[up_i] = parse_tile(1, 0, c);
-    (up_buff + 9)[up_i] = parse_tile(1, 1, c);
+    (up_buff + 8)[up_i] = TILECOORDS(c,1,0);
+    (up_buff + 9)[up_i] = TILECOORDS(c,1,1);
 
     up_i+= BIG_TILE_UPDATE_SIZE;
 
@@ -117,27 +119,33 @@ void find_dirs_avail(void) {
 const char HEX[] = "0123456789ABCDEF";
 
 void snake_task(void) {
+
     if(!(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
+        state.throttle_ctr=0;
     }
     else {
-        set_tile(state.head_x, state.head_y, '#');
-        collision_map[state.head_y] |= pow2[state.head_x];
-        if(state.state==DOWN) {
-            state.head_y += 1;
+        state.throttle_ctr += 1;
+        if(THROTTLE==state.throttle_ctr) {
+            state.throttle_ctr = 0;
+            set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+            collision_map[state.head_y] |= pow2[state.head_x];
+            if(state.state==DOWN) {
+                state.head_y += 1;
+            }
+            if(state.state==UP) {
+                state.head_y -= 1;
+            }
+            if(state.state==RIGHT) {
+                state.head_x += 1;
+            }
+            if(state.state==LEFT) {
+                state.head_x -= 1;
+            }
+            find_dirs_avail();
+            set_tile(state.head_x, state.head_y, 0xAA); //0xAA=satelite            
         }
-        if(state.state==UP) {
-            state.head_y -= 1;
-        }
-        if(state.state==RIGHT) {
-            state.head_x += 1;
-        }
-        if(state.state==LEFT) {
-            state.head_x -= 1;
-        }
-        find_dirs_avail();
-        set_tile(state.head_x, state.head_y, '^');
     }
 }
 
@@ -161,20 +169,18 @@ void snake_init(void) {
         for(y=0;y<15;y++) {
             mask = pow2[x];
             if((collision_map[y]&mask)==mask) {
-                vram_adr(NTADR_A(x<<1, y<<1));
-                vram_fill('+', 2);
-                vram_adr(NTADR_A(x<<1, (y<<1)+1));
-                vram_fill('+', 2);                
+                DRAWTILE(x,y,0x80); //0x80 = asteroid
             }
         }
     }
     state.head_x = 11;
     state.head_y = 3;
+    state.throttle_ctr = 0;
     state.state = STILL;
     find_dirs_avail();
 
     clear_up();
-    set_tile(state.head_x, state.head_y, '^');
+    set_tile(state.head_x, state.head_y, 0xAA); //0xAA satelite
     set_vram_update(up_buff);
 }
 
