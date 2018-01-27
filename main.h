@@ -14,6 +14,8 @@ typedef int8_t s8;
 
 // Dummy return type to enforce tail calling for gamestates.
 typedef struct {} TAIL_CALL;
+// Makes the compiler happy.
+static TAIL_CALL TERMINATOR(void){return TERMINATOR();}
 
 extern u8 i, ix, iy;
 extern u8 spr_id, joy0, joy1;
@@ -36,7 +38,10 @@ typedef struct {
 
 extern Ship SHIP;
 
+TAIL_CALL game_loop_start(void);
 void ship_init(void);
 void ship_update(void);
+
+TAIL_CALL title_loop_start(void);
 
 #endif main_h__
