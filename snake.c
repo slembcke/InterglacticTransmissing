@@ -2,9 +2,11 @@
 #include "snake.h"
 #include <stdlib.h>
 
+#define THROTTLE (4)
 
 struct {
     u8 head_x, head_y;
+    u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
 } state;
@@ -117,27 +119,33 @@ void find_dirs_avail(void) {
 const char HEX[] = "0123456789ABCDEF";
 
 void snake_task(void) {
+
     if(!(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
+        state.throttle_ctr=0;
     }
     else {
-        set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
-        collision_map[state.head_y] |= pow2[state.head_x];
-        if(state.state==DOWN) {
-            state.head_y += 1;
+        state.throttle_ctr += 1;
+        if(THROTTLE==state.throttle_ctr) {
+            state.throttle_ctr = 0;
+            set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+            collision_map[state.head_y] |= pow2[state.head_x];
+            if(state.state==DOWN) {
+                state.head_y += 1;
+            }
+            if(state.state==UP) {
+                state.head_y -= 1;
+            }
+            if(state.state==RIGHT) {
+                state.head_x += 1;
+            }
+            if(state.state==LEFT) {
+                state.head_x -= 1;
+            }
+            find_dirs_avail();
+            set_tile(state.head_x, state.head_y, 0xAA); //0xAA=satelite            
         }
-        if(state.state==UP) {
-            state.head_y -= 1;
-        }
-        if(state.state==RIGHT) {
-            state.head_x += 1;
-        }
-        if(state.state==LEFT) {
-            state.head_x -= 1;
-        }
-        find_dirs_avail();
-        set_tile(state.head_x, state.head_y, 0xAA); //0xAA=satelite
     }
 }
 
@@ -167,6 +175,7 @@ void snake_init(void) {
     }
     state.head_x = 11;
     state.head_y = 3;
+    state.throttle_ctr = 0;
     state.state = STILL;
     find_dirs_avail();
 
