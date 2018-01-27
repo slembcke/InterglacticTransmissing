@@ -36,11 +36,11 @@ typedef struct {
 	s16 vx, vy;
 } Ship;
 
-extern Ship SHIP;
+extern Ship SHIP[2];
 
 TAIL_CALL game_loop_start(void);
 void ship_init(void);
-void ship_update(void);
+void ship_update(u8 joy, u8 ship_idx);
 
 TAIL_CALL title_loop_start(void);
 

@@ -8,7 +8,7 @@
 #include "snake.h"
 
 u8 i, ix, iy;
-u8 joy0;
+u8 joy0, joy1;
 
 static const u8 MAIN_PALETTE[] = {
 	0x0D, 0x20, 0x11, 0x16,
@@ -47,12 +47,11 @@ TAIL_CALL game_loop_start(void){
 		spr_id = 0;
 		
 		joy0 = joy_read(0);
+		joy1 = joy_read(1);
 		
-		if(JOY_START(joy0)){
-			// move snake event in here to trigger from button press
-		}
-		snake_event(SHIP.x>>9, SHIP.y>>9, SHIP.vx, SHIP.vy);
-		ship_update();
+		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
+		ship_update(joy0, 0);
+		ship_update(joy1, 1);
 		snake_task();
 		
 		oam_hide_rest(spr_id);
