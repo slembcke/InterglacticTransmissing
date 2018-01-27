@@ -30,13 +30,14 @@ TAIL_CALL game_loop_start(void){
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
 
+		snake_init();
+
 		oam_clear();
 	} ppu_on_all();
 	
 	music_play(0);
 	
 	ship_init();
-	snake_init();
 	
 	while(true){
 		static u8 mask;
