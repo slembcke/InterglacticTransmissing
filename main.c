@@ -78,7 +78,7 @@ static const u8 TEXT_PALETTE[] = {
 
 static const char HEX[] = "0123456789ABCDEF";
 
-void chr_debug(){
+TAIL_CALL chr_debug(){
 	ppu_off(); {
 		pal_all(TEXT_PALETTE);
 		oam_clear();
@@ -120,6 +120,7 @@ void chr_debug(){
 		
 		ppu_wait_nmi();
 	}
+	return TERMINATOR();
 }
 
 void main (void) {
@@ -128,7 +129,7 @@ void main (void) {
 	bank_bg(0);
 	bank_spr(1);
 	
-	// chr_debug();
-	// title_loop_start();
+	//chr_debug();
+	title_loop_start();
 	game_loop_start();
 }

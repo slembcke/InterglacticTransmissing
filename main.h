@@ -38,7 +38,9 @@ typedef struct {
 
 extern Ship SHIP;
 
+TAIL_CALL chr_debug(void);
 TAIL_CALL game_loop_start(void);
+
 void ship_init(void);
 void ship_update(void);
 
