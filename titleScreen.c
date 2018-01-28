@@ -27,6 +27,16 @@ static const u8 starSprites[] = {0x7F, 0x8E, 0x8F, 0x9E, 0x9F};
 
 u8 start_cursor = 0;
 
+void draw_title_stars(void){
+	static clock;
+	clock = (nesclock() & 31) >> 2;
+	
+	for(i = 0; i < STAR_COUNT; ++i){
+		spr_id = oam_spr(starY[i], i << 4, starSprites[ (clock + i) % 5], 3 | 32, spr_id);
+		starY[i] -= i & 0x01 ? 2 : 4;
+	}
+}
+
 TAIL_CALL title_loop_start(void){
 	u8 x;
 	u8 y;
@@ -101,7 +111,7 @@ TAIL_CALL title_loop_start(void){
 			switch(start_cursor){
 				case 0: TWO_PLAYER = false; return story_scroller_start();
 				case 1: TWO_PLAYER = true; return story_scroller_start();
-				default: return chr_debug();
+				default: return credits_start();
 			}
 			return game_loop_start();
 		} else if(JOY_DOWN(joy0)){
@@ -135,11 +145,7 @@ TAIL_CALL title_loop_start(void){
 		if(clock > 8) clock = 16 - clock;
 		oam_meta_spr_pal( (7 * 8 - 4) + clock, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
 		
-		clock = (nesclock() & 31) >> 2;
-		for(x = 0; x < STAR_COUNT; ++x){
-			spr_id = oam_spr(starY[x], x << 4, starSprites[ (clock + x) % 5], 2 | 32, spr_id);
-			starY[x] -= x & 0x01 ? 2 : 4;
-		}
+		draw_title_stars();
 
 		ppu_wait_nmi();
 

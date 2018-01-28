@@ -74,8 +74,11 @@ void ship_init(void);
 void ship_update(u8 joy, u8 ship_idx);
 void main_event(u8, void * data);
 
+void draw_title_stars(void);
+
 TAIL_CALL end_level_sequence(void);
 TAIL_CALL title_loop_start(void);
 TAIL_CALL story_scroller_start(void);
+TAIL_CALL credits_start(void);
 
 #endif main_h__
