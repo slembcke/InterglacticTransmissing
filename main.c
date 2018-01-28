@@ -148,11 +148,13 @@ TAIL_CALL chr_debug(){
 	music_stop();
 	
 	while(true){
-		// joy = joy_read(0);
-		// if(JOY_START(joy)){
-		// 	sfx_play(0, 0);
-		// 	delay(60);
-		// }
+		joy0 = joy_read(0);
+		if(JOY_BTN_1(joy0)){
+			bank_bg(0);
+		}
+		if(JOY_BTN_2(joy0)){
+			bank_bg(1);
+		}
 		
 		ppu_wait_nmi();
 	}
