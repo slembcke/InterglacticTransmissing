@@ -42,9 +42,10 @@ TAIL_CALL game_loop_start(void){
 	while(true){
 		static u8 mask;
 		
+#ifdef DEBUG
 		mask = PPU.mask;
 		PPU.mask = mask | 0x01;
-		
+#endif		
 		spr_id = 0;
 		
 		joy0 = joy_read(0);
@@ -58,7 +59,9 @@ TAIL_CALL game_loop_start(void){
 		
 		oam_hide_rest(spr_id);
 		snake_draw_task();
+#ifdef DEBUG
 		PPU.mask = mask;
+#endif
 		ppu_wait_nmi();
 		snake_draw_post();
 	}
