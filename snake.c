@@ -27,7 +27,7 @@ struct {
 #define OFFX 4
 #define OFFY 3
 
-static const u8 SHIP_UP_MSPRITE[] = {
+static const u8 SIGNAL_UP_MSPRITE[] = {
      0,  0, 0x8C, 0,
      8,  0, 0x8D, 0,
      0,  8, 0x9C, 0,
@@ -35,7 +35,7 @@ static const u8 SHIP_UP_MSPRITE[] = {
     MSPRITE_END
 };
 
-static const u8 SHIP_DOWN_MSPRITE[] = {
+static const u8 SIGNAL_DOWN_MSPRITE[] = {
      0,  0, 0x9C, SPR_FLIP_Y,
      8,  0, 0x9D, SPR_FLIP_Y,
      0,  8, 0x8C, SPR_FLIP_Y,
@@ -43,7 +43,7 @@ static const u8 SHIP_DOWN_MSPRITE[] = {
     MSPRITE_END
 };
 
-static const u8 SHIP_RIGHT_MSPRITE[] = {
+static const u8 SIGNAL_RIGHT_MSPRITE[] = {
      0,  0, 0xAC, 0,
      8,  0, 0xAD, 0,
      0,  8, 0xBC, 0,
@@ -51,7 +51,7 @@ static const u8 SHIP_RIGHT_MSPRITE[] = {
     MSPRITE_END
 };
 
-static const u8 SHIP_LEFT_MSPRITE[] = {
+static const u8 SIGNAL_LEFT_MSPRITE[] = {
      0,  0, 0xAC, SPR_FLIP_X,
      8,  0, 0xAD, SPR_FLIP_X,
      0,  8, 0xBC, SPR_FLIP_X,
@@ -59,11 +59,11 @@ static const u8 SHIP_LEFT_MSPRITE[] = {
     MSPRITE_END
 };
 
-static const u8 * const SHIP_DIRECTIONS[] = {
-    SHIP_UP_MSPRITE,
-    SHIP_DOWN_MSPRITE,
-    SHIP_LEFT_MSPRITE,
-    SHIP_RIGHT_MSPRITE,
+static const u8 * const SIGNAL_DIRECTIONS[] = {
+    SIGNAL_UP_MSPRITE,
+    SIGNAL_DOWN_MSPRITE,
+    SIGNAL_LEFT_MSPRITE,
+    SIGNAL_RIGHT_MSPRITE,
 };
 
 
@@ -201,7 +201,7 @@ void snake_task(void) {
             if(state.state==LEFT) {
                 state.head_x -= 1;
             }
-            state.sig_dir = SHIP_DIRECTIONS[state.state];
+            state.sig_dir = SIGNAL_DIRECTIONS[state.state];
             find_dirs_avail();
             state.sig_str = '8';
         }
@@ -232,7 +232,7 @@ void snake_init(void) {
             }
         }
     }
-    state.sig_dir = SHIP_UP_MSPRITE;
+    state.sig_dir = SIGNAL_UP_MSPRITE;
     x=level_0_start[0]+OFFX;
     y=level_0_start[1]+OFFY;
     state.head_x = x;
