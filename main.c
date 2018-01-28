@@ -13,7 +13,8 @@ u8 joy0, joy1;
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
-		
+		pal_bright(4);
+
 		vram_inc(0);
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
@@ -62,13 +63,20 @@ TAIL_CALL game_loop_start(void){
 	return TERMINATOR();
 }
 
+#define FADE_SPEED 10
 TAIL_CALL end_level_sequence(){
 	music_stop();
 	sfx_play(1, 0);
 	delay(10);
 
 	// Run some neat pallete changes.
-	
+	pal_bright(3);
+	delay(FADE_SPEED);
+	pal_bright(2);
+	delay(FADE_SPEED);
+	pal_bright(1);
+	delay(FADE_SPEED);
+	pal_bright(0);
 
 	return game_loop_start();
 }
@@ -142,6 +150,7 @@ void main_event(u8 event, void * data)
 	else if(event==YOU_LOSE) {
 		// I guess you lose?
 		// queue lose event or handle
+		end_level_sequence(); // should be a tail call
 	}
 }
 
