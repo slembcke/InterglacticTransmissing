@@ -169,7 +169,7 @@ void ship_update(u8 joy, u8 ship_idx){
 	
 	oam_meta_spr_pal((ship.x >> 8), (ship.y >> 8), ship_idx, ship.msprite);
 	
-	if(joy){
+	if(joy & 0xF0){
 		register fx = (ship.x >> 8) + FX[joy >> 4], fy = (ship.y >> 8) + FY[joy >> 4];
 		spr_id = oam_spr(fx, fy, 0xCC + (fire & 0x3), ((fire & 0xC) << 4) | (!ship_idx), spr_id);
 		++fire;
