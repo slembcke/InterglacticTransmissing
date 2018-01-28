@@ -1,4 +1,4 @@
-PROJECT_NAME = GGJ2018
+PROJECT_NAME = InterglacticTransmissing
 ROM = $(PROJECT_NAME).nes
 
 CC65_ROOT = ../cc65

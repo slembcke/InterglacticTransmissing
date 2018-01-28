@@ -15,7 +15,7 @@ static const u8 SHIP_RIGHT_MSPRITE[] = {
 	MSPRITE_END
 };
 
-static const char TITLE_TEXT[] = "Intergalactic Transmissing!";
+static const char TITLE_TEXT[] = "Interglactic Transmissing!";
 static const char START_TEXT_1[] = "One Player";
 static const char START_TEXT_2[] = "Two Player";
 static const char START_TEXT_3[] = "Credits";
