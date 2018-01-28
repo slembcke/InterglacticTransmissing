@@ -15,6 +15,9 @@ SRC = main.c ship.c snake.c titleScreen.c
 ASMSRC = neslib/crt0.s chr_rom.s
 OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o)
 
+debug: CFLAGS += -DDEBUG -g
+debug: run
+
 $(ROM): ld65.cfg $(OBJS)
 	$(LD) -C ld65.cfg $(OBJS) nes.lib -m link.log -o $@
 
