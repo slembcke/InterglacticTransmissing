@@ -1,0 +1,417 @@
+Total unsolved puzzles tried: 159⏎                                                                                lili:GGJ2018|master⚡*? $ cc -O3 genpuzzles.c; and ./a.out 8 12 7
+Puzzle 1 of 8.
+0 ............
+1 ............
+2 ............
+3 ............
+4 ............
+5 .....o......
+6 ............
+7 ....o.......
+8 .......oo...
+9 .......o....
+A ......oo....
+B ............
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC003,0xC003,0xC083,0xC003,0xC043,0xC603,0xC203,0xC303,0xC003,", start:[4, 9]},
+
+ 1) Start at (4, 9). (1 choice)
+ 2) (4, 9): Go up. (4 choices)
+ 3) (4, 8): Go right. (2 choices)
+ 4) (6, 8): Go down. (2 choices)
+ 5) (6, 9): Go left. (1 choices)
+ 6) (5, 9): Go down. (1 choices)
+ 7) (5, 11): Go right. (2 choices)
+ 8) (11, 11): Go up. (1 choices)
+ 9) (11, 0): Go left. (1 choices)
+ 10) (0, 0): Go down. (1 choices)
+ 11) (0, 11): Go right. (1 choices)
+ 12) (4, 11): Go up. (1 choices)
+ 13) (4, 10): Go left. (1 choices)
+ 14) (1, 10): Go up. (1 choices)
+ 15) (1, 1): Go right. (1 choices)
+ 16) (10, 1): Go down. (1 choices)
+ 17) (10, 10): Go left. (1 choices)
+ 18) (8, 10): Go up. (1 choices)
+ 19) (8, 9): Go right. (1 choices)
+ 20) (9, 9): Go up. (1 choices)
+ 21) (9, 2): Go left. (1 choices)
+ 22) (2, 2): Go down. (1 choices)
+ 23) (2, 9): Go right. (1 choices)
+ 24) (3, 9): Go up. (1 choices)
+ 25) (3, 3): Go right. (1 choices)
+ 26) (8, 3): Go down. (1 choices)
+ 27) (8, 7): Go left. (1 choices)
+ 28) (5, 7): Go up. (1 choices)
+ 29) (5, 6): Go left. (2 choices)
+ 30) (4, 6): Go up. (1 choices)
+ 31) (4, 4): Go right. (1 choices)
+ 32) (7, 4): Go down. (1 choices)
+ 33) (7, 6): Go left. (1 choices)
+ 34) (6, 6): Go up. (1 choices)
+Puzzle completed (6, 5).
+Total choices: 41. Total steps: 34. Extra choices: 7.
+Tried 44134 unsolvable puzzles.
+
+
+Puzzle 2 of 8.
+0 ............
+1 ............
+2 ............
+3 ............
+4 ..o.........
+5 ............
+6 ...ooo......
+7 ooo.........
+8 ............
+9 ............
+A ............
+B ............
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC003,0xC013,0xC003,0xC0E3,0xC01F,0xC003,0xC003,0xC003,0xC003,", start:[2, 8]},
+
+ 1) Start at (2, 8). (1 choice)
+ 2) (2, 8): Go left. (3 choices)
+ 3) (0, 8): Go down. (1 choices)
+ 4) (0, 11): Go right. (1 choices)
+ 5) (11, 11): Go up. (1 choices)
+ 6) (11, 0): Go left. (1 choices)
+ 7) (0, 0): Go down. (1 choices)
+ 8) (0, 6): Go right. (1 choices)
+ 9) (2, 6): Go up. (1 choices)
+ 10) (2, 5): Go left. (2 choices)
+ 11) (1, 5): Go up. (1 choices)
+ 12) (1, 1): Go right. (1 choices)
+ 13) (10, 1): Go down. (1 choices)
+ 14) (10, 10): Go left. (1 choices)
+ 15) (1, 10): Go up. (1 choices)
+ 16) (1, 9): Go right. (1 choices)
+ 17) (9, 9): Go up. (1 choices)
+ 18) (9, 2): Go left. (1 choices)
+ 19) (2, 2): Go down. (1 choices)
+ 20) (2, 3): Go right. (1 choices)
+ 21) (8, 3): Go down. (1 choices)
+ 22) (8, 8): Go left. (1 choices)
+ 23) (3, 8): Go up. (1 choices)
+ 24) (3, 7): Go right. (1 choices)
+ 25) (7, 7): Go up. (1 choices)
+ 26) (7, 4): Go left. (1 choices)
+ 27) (3, 4): Go down. (1 choices)
+ 28) (3, 5): Go right. (1 choices)
+ 29) (6, 5): Go down. (1 choices)
+Puzzle completed (6, 6).
+Total choices: 32. Total steps: 29. Extra choices: 3.
+Tried 144938 unsolvable puzzles.
+
+
+Puzzle 3 of 8.
+0 ............
+1 ............
+2 ............
+3 ...o........
+4 ............
+5 ..o...o.....
+6 ............
+7 ............
+8 ............
+9 o...........
+A o.o.........
+B o...........
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC023,0xC003,0xC113,0xC003,0xC003,0xC003,0xC007,0xC017,0xC007,", start:[2, 6]},
+
+ 1) Start at (2, 6). (1 choice)
+ 2) (2, 6): Go down. (3 choices)
+ 3) (2, 9): Go left. (2 choices)
+ 4) (1, 9): Go down. (2 choices)
+ 5) (1, 11): Go right. (1 choices)
+ 6) (11, 11): Go up. (1 choices)
+ 7) (11, 0): Go left. (1 choices)
+ 8) (0, 0): Go down. (1 choices)
+ 9) (0, 8): Go right. (1 choices)
+ 10) (1, 8): Go up. (1 choices)
+ 11) (1, 1): Go right. (1 choices)
+ 12) (10, 1): Go down. (1 choices)
+ 13) (10, 10): Go left. (1 choices)
+ 14) (3, 10): Go up. (1 choices)
+ 15) (3, 4): Go left. (2 choices)
+ 16) (2, 4): Go up. (1 choices)
+ 17) (2, 2): Go right. (1 choices)
+ 18) (9, 2): Go down. (1 choices)
+ 19) (9, 9): Go left. (1 choices)
+ 20) (4, 9): Go up. (1 choices)
+ 21) (4, 3): Go right. (1 choices)
+ 22) (8, 3): Go down. (1 choices)
+ 23) (8, 8): Go left. (1 choices)
+ 24) (5, 8): Go up. (1 choices)
+ 25) (5, 4): Go right. (1 choices)
+ 26) (7, 4): Go down. (1 choices)
+ 27) (7, 7): Go left. (1 choices)
+ 28) (6, 7): Go up. (1 choices)
+Puzzle completed (6, 6).
+Total choices: 33. Total steps: 28. Extra choices: 5.
+Tried 292867 unsolvable puzzles.
+
+
+Puzzle 4 of 8.
+0 ...........o
+1 ............
+2 ............
+3 ............
+4 ............
+5 ............
+6 .....oooo...
+7 ............
+8 .........o..
+9 ............
+A ..........o.
+B ............
+  0123456789AB
+
+		{puzz:"0xE003,0xC003,0xC003,0xC003,0xC003,0xC003,0xC783,0xC003,0xC803,0xC003,0xD003,0xC003,", start:[10, 0]},
+
+ 1) Start at (10, 0). (1 choice)
+ 2) (10, 0): Go left. (2 choices)
+ 3) (0, 0): Go down. (1 choices)
+ 4) (0, 11): Go right. (1 choices)
+ 5) (11, 11): Go up. (1 choices)
+ 6) (11, 1): Go left. (1 choices)
+ 7) (1, 1): Go down. (1 choices)
+ 8) (1, 10): Go right. (1 choices)
+ 9) (9, 10): Go up. (1 choices)
+ 10) (9, 9): Go right. (2 choices)
+ 11) (10, 9): Go up. (1 choices)
+ 12) (10, 2): Go left. (1 choices)
+ 13) (2, 2): Go down. (1 choices)
+ 14) (2, 9): Go right. (1 choices)
+ 15) (8, 9): Go up. (1 choices)
+ 16) (8, 7): Go right. (2 choices)
+ 17) (9, 7): Go up. (1 choices)
+ 18) (9, 3): Go left. (1 choices)
+ 19) (3, 3): Go down. (1 choices)
+ 20) (3, 8): Go right. (1 choices)
+ 21) (7, 8): Go up. (1 choices)
+ 22) (7, 7): Go left. (1 choices)
+ 23) (4, 7): Go up. (1 choices)
+ 24) (4, 4): Go right. (1 choices)
+ 25) (8, 4): Go down. (1 choices)
+ 26) (8, 5): Go left. (1 choices)
+Puzzle completed (5, 5).
+Total choices: 29. Total steps: 26. Extra choices: 3.
+Tried 47521 unsolvable puzzles.
+
+
+Puzzle 5 of 8.
+0 ............
+1 ............
+2 .....o......
+3 .......o....
+4 ....o.......
+5 ....o...o...
+6 ......o.o...
+7 ............
+8 ............
+9 ............
+A ............
+B ............
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC083,0xC203,0xC043,0xC443,0xC503,0xC003,0xC003,0xC003,0xC003,0xC003,", start:[7, 2]},
+
+ 1) Start at (7, 2). (1 choice)
+ 2) (7, 2): Go up. (3 choices)
+ 3) (7, 0): Go left. (2 choices)
+ 4) (0, 0): Go down. (1 choices)
+ 5) (0, 11): Go right. (1 choices)
+ 6) (11, 11): Go up. (1 choices)
+ 7) (11, 0): Go left. (1 choices)
+ 8) (8, 0): Go down. (1 choices)
+ 9) (8, 4): Go left. (2 choices)
+ 10) (5, 4): Go up. (2 choices)
+ 11) (5, 3): Go right. (2 choices)
+ 12) (6, 3): Go up. (1 choices)
+ 13) (6, 1): Go left. (1 choices)
+ 14) (1, 1): Go down. (1 choices)
+ 15) (1, 10): Go right. (1 choices)
+ 16) (10, 10): Go up. (1 choices)
+ 17) (10, 1): Go left. (1 choices)
+ 18) (9, 1): Go down. (1 choices)
+ 19) (9, 9): Go left. (1 choices)
+ 20) (2, 9): Go up. (1 choices)
+ 21) (2, 2): Go right. (1 choices)
+ 22) (4, 2): Go down. (1 choices)
+ 23) (4, 3): Go left. (1 choices)
+ 24) (3, 3): Go down. (1 choices)
+ 25) (3, 8): Go right. (1 choices)
+ 26) (8, 8): Go up. (1 choices)
+ 27) (8, 7): Go left. (1 choices)
+ 28) (4, 7): Go up. (1 choices)
+ 29) (4, 6): Go right. (1 choices)
+ 30) (5, 6): Go up. (1 choices)
+ 31) (5, 5): Go right. (1 choices)
+ 32) (7, 5): Go down. (1 choices)
+Puzzle completed (7, 6).
+Total choices: 38. Total steps: 32. Extra choices: 6.
+Tried 371354 unsolvable puzzles.
+
+
+Puzzle 6 of 8.
+0 ............
+1 ............
+2 ............
+3 ............
+4 ............
+5 .....o......
+6 .....o...o..
+7 .......o....
+8 ........o...
+9 ........o...
+A ............
+B .........o..
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC003,0xC003,0xC083,0xC883,0xC203,0xC403,0xC403,0xC003,0xC803,", start:[6, 3]},
+
+ 1) Start at (6, 3). (1 choice)
+ 2) (6, 3): Go right. (4 choices)
+ 3) (11, 3): Go up. (2 choices)
+ 4) (11, 0): Go left. (1 choices)
+ 5) (0, 0): Go down. (1 choices)
+ 6) (0, 11): Go right. (1 choices)
+ 7) (8, 11): Go up. (1 choices)
+ 8) (8, 10): Go left. (2 choices)
+ 9) (1, 10): Go up. (1 choices)
+ 10) (1, 1): Go right. (1 choices)
+ 11) (10, 1): Go down. (1 choices)
+ 12) (10, 2): Go left. (1 choices)
+ 13) (2, 2): Go down. (1 choices)
+ 14) (2, 9): Go right. (1 choices)
+ 15) (7, 9): Go up. (1 choices)
+ 16) (7, 8): Go left. (1 choices)
+ 17) (3, 8): Go up. (1 choices)
+ 18) (3, 3): Go right. (1 choices)
+ 19) (5, 3): Go down. (1 choices)
+ 20) (5, 4): Go left. (2 choices)
+ 21) (4, 4): Go down. (1 choices)
+ 22) (4, 7): Go right. (1 choices)
+ 23) (6, 7): Go up. (1 choices)
+ 24) (6, 4): Go right. (1 choices)
+ 25) (11, 4): Go down. (1 choices)
+ 26) (11, 11): Go left. (1 choices)
+ 27) (10, 11): Go up. (1 choices)
+ 28) (10, 5): Go left. (1 choices)
+ 29) (7, 5): Go down. (1 choices)
+ 30) (7, 6): Go right. (1 choices)
+ 31) (8, 6): Go down. (1 choices)
+ 32) (8, 7): Go right. (1 choices)
+ 33) (9, 7): Go down. (1 choices)
+Puzzle completed (9, 10).
+Total choices: 39. Total steps: 33. Extra choices: 6.
+Tried 424728 unsolvable puzzles.
+
+
+Puzzle 7 of 8.
+0 ............
+1 ............
+2 ............
+3 ...oo.......
+4 .......o....
+5 .........o..
+6 ............
+7 ..........o.
+8 ..........o.
+9 ..o.........
+A ............
+B ............
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC063,0xC203,0xC803,0xC003,0xD003,0xD003,0xC013,0xC003,0xC003,", start:[3, 7]},
+
+ 1) Start at (3, 7). (1 choice)
+ 2) (3, 7): Go up. (4 choices)
+ 3) (3, 4): Go right. (2 choices)
+ 4) (6, 4): Go down. (2 choices)
+ 5) (6, 11): Go left. (2 choices)
+ 6) (0, 11): Go up. (1 choices)
+ 7) (0, 0): Go right. (1 choices)
+ 8) (11, 0): Go down. (1 choices)
+ 9) (11, 11): Go left. (1 choices)
+ 10) (7, 11): Go up. (1 choices)
+ 11) (7, 5): Go right. (1 choices)
+ 12) (8, 5): Go down. (2 choices)
+ 13) (8, 10): Go right. (1 choices)
+ 14) (10, 10): Go up. (1 choices)
+ 15) (10, 9): Go left. (1 choices)
+ 16) (9, 9): Go up. (1 choices)
+ 17) (9, 6): Go right. (1 choices)
+ 18) (10, 6): Go up. (1 choices)
+ 19) (10, 1): Go left. (1 choices)
+ 20) (1, 1): Go down. (1 choices)
+ 21) (1, 10): Go right. (1 choices)
+ 22) (5, 10): Go up. (1 choices)
+ 23) (5, 5): Go left. (1 choices)
+ 24) (4, 5): Go down. (1 choices)
+ 25) (4, 9): Go left. (1 choices)
+ 26) (3, 9): Go up. (1 choices)
+ 27) (3, 8): Go left. (1 choices)
+ 28) (2, 8): Go up. (1 choices)
+ 29) (2, 2): Go right. (1 choices)
+ 30) (9, 2): Go down. (1 choices)
+ 31) (9, 4): Go left. (1 choices)
+ 32) (8, 4): Go up. (1 choices)
+ 33) (8, 3): Go left. (1 choices)
+Puzzle completed (5, 3).
+Total choices: 40. Total steps: 33. Extra choices: 7.
+Tried 166277 unsolvable puzzles.
+
+
+Puzzle 8 of 8.
+0 ............
+1 ............
+2 ............
+3 ............
+4 ............
+5 .......oo...
+6 ........o...
+7 ........o...
+8 ............
+9 ............
+A ........ooo.
+B ............
+  0123456789AB
+
+		{puzz:"0xC003,0xC003,0xC003,0xC003,0xC003,0xC603,0xC403,0xC403,0xC003,0xC003,0xDC03,0xC003,", start:[7, 10]},
+
+ 1) Start at (7, 10). (1 choice)
+ 2) (7, 10): Go left. (3 choices)
+ 3) (0, 10): Go down. (2 choices)
+ 4) (0, 11): Go right. (1 choices)
+ 5) (11, 11): Go up. (1 choices)
+ 6) (11, 0): Go left. (1 choices)
+ 7) (0, 0): Go down. (1 choices)
+ 8) (0, 9): Go right. (1 choices)
+ 9) (10, 9): Go up. (1 choices)
+ 10) (10, 1): Go left. (1 choices)
+ 11) (1, 1): Go down. (1 choices)
+ 12) (1, 8): Go right. (1 choices)
+ 13) (9, 8): Go up. (1 choices)
+ 14) (9, 2): Go left. (1 choices)
+ 15) (2, 2): Go down. (1 choices)
+ 16) (2, 7): Go right. (1 choices)
+ 17) (7, 7): Go up. (1 choices)
+ 18) (7, 6): Go left. (1 choices)
+ 19) (3, 6): Go up. (1 choices)
+ 20) (3, 3): Go right. (1 choices)
+ 21) (8, 3): Go down. (1 choices)
+ 22) (8, 4): Go left. (1 choices)
+ 23) (4, 4): Go down. (1 choices)
+ 24) (4, 5): Go right. (1 choices)
+Puzzle completed (6, 5).
+Total choices: 27. Total steps: 24. Extra choices: 3.
+Tried 711176 unsolvable puzzles.
+
+
+Total unsolved puzzles tried: 2202995⏎                                                                            lili:GGJ2018|master⚡? $ 
