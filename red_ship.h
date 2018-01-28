@@ -65,7 +65,7 @@ static const u8 RED_LEFT_DOWN_MSPRITE[] = {
 // Map ship directions directly to the right, left, down, up input bits.
 // NULL if conflict. (ex: right and left)
 static const u8 * const RED_DIRECTIONS[] = {
-]    RED_LEFT_MSPRITE,
+    RED_LEFT_MSPRITE,
     RED_UP_MSPRITE,
     RED_RIGHT_MSPRITE,
     RED_DOWN_MSPRITE,

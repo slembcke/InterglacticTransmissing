@@ -2,7 +2,7 @@
 #include "neslib/neslib.h";
 
 
-// #include "red_ship.h"
+#include "red_ship.h"
 #include "blue_ship.h"
 #include "tri_ship.h"
 #include "ang_ship.h"
@@ -17,7 +17,7 @@ static u8 tick=0;
 
 typedef enum go_state {GO_LEFT, GO_UP, GO_RIGHT, GO_DOWN, GO_LEFT_UP, GO_RIGHT_UP, GO_RIGHT_DOWN, GO_LEFT_DOWN} go_state_t;
 
-#define BOGIES (3)
+#define BOGIES (4)
 #define CUT (4)
 
 struct  {
@@ -28,7 +28,7 @@ struct  {
     u8 left;
     u8 right;
     go_state_t go;
-    enum {CLOCK, OTHER, OCTOGON} rotation;
+    enum {CLOCK, OTHER, OCTOGON, PATROL, RANDOM} rotation;
     const u8 * const * directions;
 } enemy[BOGIES];
 
@@ -66,6 +66,17 @@ void enemy_init(void) {
     enemy[2].go = GO_LEFT;
     enemy[2].rotation = OCTOGON;
     enemy[2].directions = BLUE_DIRECTIONS;
+
+    enemy[3].top=1;
+    enemy[3].bottom=14;
+    enemy[3].left=1;
+    enemy[3].right=14;
+    enemy[3].x=8<<4;
+    enemy[3].y=8<<4;
+    enemy[3].msprite = RED_DIRECTIONS[0];
+    enemy[3].go = GO_LEFT;
+    enemy[3].rotation = PATROL;
+    enemy[3].directions = RED_DIRECTIONS;
 }
 
 
@@ -96,6 +107,12 @@ void enemy_move(u8 i) {
         if(enemy[i].go==GO_RIGHT_UP)   {    --enemy[i].y;   ++enemy[i].x;
                                         if((  enemy[i].y)>>4<=enemy[i].top)       {enemy[i].go=GO_RIGHT;}}       
     } 
+    if(enemy[i].rotation==PATROL) {
+        if(enemy[i].go==GO_RIGHT) {if((++enemy[i].x)>>4>=enemy[i].right)  {enemy[i].go=GO_LEFT;}} else 
+        if(enemy[i].go==GO_DOWN)  {if((++enemy[i].y)>>4>=enemy[i].bottom) {enemy[i].go=GO_UP;}} else 
+        if(enemy[i].go==GO_LEFT)  {if((--enemy[i].x)>>4<=enemy[i].left)   {enemy[i].go=GO_RIGHT;}} else
+        if(enemy[i].go==GO_UP)    {if((--enemy[i].y)>>4<=enemy[i].top)    {enemy[i].go=GO_DOWN;}}        
+    }
 }
 
 void enemy_update(void){
