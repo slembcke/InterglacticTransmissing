@@ -78,6 +78,12 @@ TAIL_CALL game_loop_start(void){
 			if(JOY_BTN_2(joy1)) snake_event(SHIP[1].x>>8, SHIP[1].y>>8, SHIP[1].vx, SHIP[1].vy);
 			ship_update(joy1, 1);
 		}
+		if((enemy_event(SHIP[0].x>>8, SHIP[0].y>>8) == ENEMY_LOSS) ||
+		   (enemy_event(SHIP[1].x>>8, SHIP[1].y>>8) == ENEMY_LOSS))
+		{
+			return end_level_sequence();
+		}
+		
 		enemy_update();
 		
 		snake_task();

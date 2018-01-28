@@ -6,6 +6,7 @@
 // #include "blue_ship.h"
 // #include "tri_ship.h"
 #include "ang_ship.h"
+#include "enemy.h"
 
 static u8 tick=0;
 
@@ -16,56 +17,43 @@ static u8 tick=0;
 
 
 struct  {
-    u8 x, y;
+    u16 x, y;
     const u8 *msprite;
-} enemy;
-
-struct {
     u8 top;
     u8 bottom;
     u8 left;
     u8 right;
-} bourder_route;
+} enemy;
+
 
 void enemy_init(void) {
-    enemy.x=bourder_route.left;
-    enemy.y=bourder_route.top;
+    enemy.top=3;
+    enemy.bottom=13;
+    enemy.left=3;
+    enemy.right=13;
+    enemy.x=enemy.left<<4;
+    enemy.y=enemy.top<<4;
     enemy.msprite = ANG_DIRECTIONS[0];
-
-    bourder_route.top=3;
-    bourder_route.bottom=13;
-    bourder_route.left=3;
-    bourder_route.right=13;
+    oam_meta_spr_pal(enemy.x, enemy.y, ENEMY_PALETTE, enemy.msprite);
 }
 
 
 enum {GO_LEFT, GO_UP, GO_RIGHT, GO_DOWN} go_state = GO_RIGHT;
 
 void enemy_move(void) {
-    if(go_state==GO_RIGHT) {if(++enemy.x==bourder_route.right) {go_state=GO_DOWN;}} else 
-    if(go_state==GO_DOWN)   {if(++enemy.y==bourder_route.bottom) {go_state=GO_LEFT;}} else 
-    if(go_state==GO_LEFT){if(--enemy.x==bourder_route.left)  {go_state=GO_UP;}} else
-    if(go_state==GO_UP) {if(--enemy.y==bourder_route.top)  {go_state=GO_RIGHT;}}
+    if(go_state==GO_RIGHT) {if((++enemy.x)>>4>=enemy.right) {go_state=GO_DOWN;}} else 
+    if(go_state==GO_DOWN)   {if((++enemy.y)>>4>=enemy.bottom) {go_state=GO_LEFT;}} else 
+    if(go_state==GO_LEFT){if((--enemy.x)>>4<=enemy.left)  {go_state=GO_UP;}} else
+    if(go_state==GO_UP) {if((--enemy.y)>>4<=enemy.top)  {go_state=GO_RIGHT;}}
 }
 
 void enemy_update(void){
     static const u8 *msprite;
     static u8 tick=0;
     static u8 pixels=0;
-    s8 x_delta=0, y_delta=0;
 
-    if(go_state==GO_RIGHT) {x_delta++;} else 
-    if(go_state==GO_DOWN)  {y_delta++;} else 
-    if(go_state==GO_LEFT)  {x_delta--;} else
-    if(go_state==GO_UP)    {y_delta--;}
-    if(tick%CHUNK==0) {
-        pixels+=CHUNK;
-        oam_meta_spr_pal((enemy.x*PIXELS_PER_COORD)+x_delta, (enemy.y*PIXELS_PER_COORD)+y_delta, ENEMY_PALETTE, enemy.msprite);
-    }
-    if((pixels)%PIXELS_PER_COORD==0) {    
-        enemy_move();
-        tick=0;
-    }
+    enemy_move();
+    oam_meta_spr_pal(enemy.x, enemy.y, ENEMY_PALETTE, enemy.msprite);
 
     msprite = ANG_DIRECTIONS[go_state];
     if(msprite) enemy.msprite = msprite;
@@ -76,3 +64,17 @@ void enemy_update(void){
     //     ++fire;
     // }
 }
+
+enemy_status_t enemy_event(u8 ship_x, u8 ship_y)
+{
+
+    if(
+        enemy.x - 8 <= ship_x && ship_x <= enemy.x + 8 &&
+        enemy.y - 8 <= ship_y && ship_y <= enemy.y + 8
+    )
+    {
+        return ENEMY_LOSS;
+    }
+    return NOT_DEAD_YET;
+}
+
