@@ -166,6 +166,10 @@ void find_dirs_avail(void) {
     }
 }
 
+bool snake_success(){
+    return (state.tiles_covered == (LEVEL_SIZE*LEVEL_SIZE - LEVEL_BLOCKERS - 1));
+}
+
 const char HEX[] = "0123456789ABCDEF";
 
 u8 is_start(void) {
@@ -252,15 +256,8 @@ void snake_init(void) {
         }
     }
     
-    collision_map[0] = 0xFFFF; //map border
-    collision_map[1] = 0xFFFF; //map border
-    collision_map[2] = 0xFFFF; //map border
-    collision_map[11] = 0xFFFF; //map border
-    collision_map[12] = 0xFFFF; //map border
-    collision_map[13] = 0xFFFF; //map border
-    collision_map[14] = 0xFFFF; //map border
-    collision_map[15] = 0xFFFF; //map border
-    for(i=0;i<12;i++) {
+    memfill(collision_map, 0xFF, sizeof(collision_map));
+    for(i=0;i<LEVEL_SIZE;i++) {
         collision_map[i+2] = level_0[i];
     }
 

@@ -38,5 +38,6 @@ extern void snake_task(void);
 extern void snake_draw_task(void);
 extern void snake_draw_post(void);
 extern void snake_event(u8 x, u8 y, s16 vx, s16 vy);
+extern bool snake_success(void);
 
 #endif //SNAKE_H__

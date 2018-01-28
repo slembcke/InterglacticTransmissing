@@ -56,6 +56,10 @@ TAIL_CALL game_loop_start(void){
 		joy0 = joy_read(0);
 		joy1 = joy_read(1);
 		
+		if(snake_success()){
+			return end_level_sequence();
+		}
+		
 		if(JOY_SELECT(joy0)){
 			// restart current level:
 			return end_level_sequence();
