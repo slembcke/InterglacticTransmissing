@@ -11,7 +11,8 @@ struct {
     u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
-    u32 sig_dir;
+    u8 dir;
+    u16 sig_dir;
     u8 tiles_covered;
     snake_status_t victory_condition;
     
@@ -134,6 +135,7 @@ void set_state(u32 new_state)
     state.state = new_state;
     if(new_state < STILL) {
         sfx_play(2, 0);
+        state.dir = new_state;
     }
 }
 
@@ -192,7 +194,21 @@ void signal_died(void) {
 }
 
 void snake_task(void) {
-    spr_id = oam_meta_spr((state.head_x*16), (state.head_y*16), spr_id, state.sig_dir);
+    {
+        register u8 x = state.head_x*16;
+        register u8 y = state.head_y*16;
+		register u8 clock = (nesclock() >> 1) & 15;
+		if(clock > 8) clock = 16 - clock;
+        if(state.dir == LEFT || state.dir == RIGHT){
+            x += clock - 4;
+        }
+        if(state.dir == UP || state.dir == DOWN){
+            y += clock - 4;
+        }
+        
+        oam_meta_spr_pal(x, y, 0, state.sig_dir);
+    }
+    
     if(state.head_x != state.level.start_x || 
         state.head_y != state.level.start_y)
     {
