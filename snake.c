@@ -166,6 +166,8 @@ void snake_task(void) {
     }
 }
 
+
+
 void snake_init(void) {
     u8 i=0;
     u16 row=0x01, mask=0;
@@ -181,15 +183,31 @@ void snake_init(void) {
     for(i=0;i<8;i++) {
         collision_map[i+3] = level_0[i];
     }
+
     for(x=0;x<16;x++) {
+        mask = pow2[x];
         for(y=0;y<15;y++) {
-            mask = pow2[x];
-            if((collision_map[y]&mask)==mask) {
-                u8 idx = (x + (y << 1)) % 8;
-                DRAWTILE(x*2,y*2,asteroidCornerIndex[idx]);
+            if( (collision_map[y]&mask)==mask) {
+                DRAWTILE(x*2,y*2, asteroidCornerIndex[(x + (y << 1) ) % 8] );
             }
         }
     }
+    vram_adr(NTADR_A(0, 30) );
+            
+     for(x=0;x<8;x++) {
+        u8 maskR = pow2[x * 2 + 1];
+        mask = pow2[x * 2];
+        for(y=0;y<8;y++) {
+            // collect all 4 tiles:
+            // palette 0x01 is the asteroid palette 
+            u8 value = ((collision_map[y * 2]&mask ) ==mask) | ((collision_map[y * 2]&maskR)==maskR) << 2 | ((collision_map[y * 2 + 1]&mask)==mask) << 4 | ((collision_map[y * 2 + 1]&maskR)==maskR) << 6;
+            u8 attrIdx = x + y * 8;
+                    // We are on the bottom right corner of a palette tile.
+                    // if (x == 1 && y == 1){
+            vram_adr(NTADR_A(attrIdx, 30) );
+            vram_put(value);  // 01 01 01 01 
+        }
+     }
     x=level_0_start[0]+OFFX;
     y=level_0_start[1]+OFFY;
     state.head_x = x;
