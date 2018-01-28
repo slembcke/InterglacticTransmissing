@@ -35,7 +35,8 @@ Send us events from main like this
 
 extern void snake_init(void);
 extern void snake_task(void);
+extern void snake_draw_task(void);
 extern void snake_draw_post(void);
-extern void snake_event(u16 x, u16 y, s16 vx, s16 vy);
+extern void snake_event(u8 x, u8 y, s16 vx, s16 vy);
 
 #endif //SNAKE_H__

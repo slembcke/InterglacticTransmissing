@@ -51,7 +51,7 @@ vram_put(tile + 0x10);\
 vram_adr(NTADR_A(((x)<<1)+1, ((y)<<1)+1));\
 vram_put(tile+0x11);
 
-extern const char HEX[];
+
 
 #define DRAWTILE(x,y,tile) vram_adr(NTADR_A(x, y));\
 vram_put(tile);\
