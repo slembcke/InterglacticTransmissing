@@ -12,6 +12,7 @@ struct {
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
     u32 sig_dir;
+    u8 tiles_covered;
 } state;
 
 
@@ -167,8 +168,17 @@ void find_dirs_avail(void) {
 
 const char HEX[] = "0123456789ABCDEF";
 
-void snake_task(void) {
+u8 is_start(void) {
+    return (state.head_x != level_0_start[0]+OFFX || 
+        state.head_y != level_0_start[1]+OFFY);
+}
 
+u8 is_end(void) {
+    return (state.head_x != level_0_end[0]+OFFX || 
+        state.head_y != level_0_end[1]+OFFY);
+}
+
+void snake_task(void) {
     spr_id = oam_meta_spr((state.head_x*16), (state.head_y*16), spr_id, state.sig_dir);
     if(state.head_x != level_0_start[0]+OFFX || 
         state.head_y != level_0_start[1]+OFFY)
@@ -195,15 +205,19 @@ void snake_task(void) {
             collision_map[state.head_y] |= pow2[state.head_x];
             if(state.state==DOWN) {
                 state.head_y += 1;
+                state.tiles_covered++;
             }
             if(state.state==UP) {
                 state.head_y -= 1;
+                state.tiles_covered++;
             }
             if(state.state==RIGHT) {
                 state.head_x += 1;
+                state.tiles_covered++;
             }
             if(state.state==LEFT) {
                 state.head_x -= 1;
+                state.tiles_covered++;
             }
             state.sig_dir = SIGNAL_DIRECTIONS[state.state];
             find_dirs_avail();
@@ -278,6 +292,7 @@ void snake_init(void) {
 
  
     state.sig_dir = SIGNAL_UP_MSPRITE;
+    state.tiles_covered = 0;
     x=level_0_start[0]+OFFX;
     y=level_0_start[1]+OFFY;
     state.head_x = x;
