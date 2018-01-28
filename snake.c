@@ -221,13 +221,6 @@ void signal_died(void) {
     state.victory_condition = SNAKE_LOSS;
 }
 
-void truncate_message(u8 new_length) {
-    u8 x,y;
-    y=2; x=2+new_length;
-    state.message_length = new_length;
-    set_tile_quarter_asteroid(x, y);
-}
-
 void snake_task(void) {
     {
         register u8 x = state.head_x*16;
@@ -252,10 +245,15 @@ void snake_task(void) {
                 signal_died();
             }
             else {
+                u16 tile_hi = NTADR_A(3 + state.sig_str, 3);
+                (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
+                (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
+                (up_buff + 2)[up_i] = 1;
+                (up_buff + 3)[up_i] = 0x00;
+                up_i+= 4;
+                up_buff[up_i] = NT_UPD_EOF;
+                
                 state.sig_str -= 1;
-                if(state.sig_str < state.message_length) {
-                    truncate_message(state.sig_str);
-                }
             }
         }
     }
@@ -291,7 +289,17 @@ void snake_task(void) {
             }
             state.sig_dir = SIGNAL_DIRECTIONS[state.state];
             find_dirs_avail();
-            state.sig_str = 40;
+            state.sig_str = 24;
+            
+            {
+                u16 tile_hi = NTADR_A(4, 3);
+                (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
+                (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
+                (up_buff + 2)[up_i] = 24;
+                memfill(up_buff + 3 + up_i, 0x19, 24);
+                up_i += 3 + 24;
+                up_buff[up_i] = NT_UPD_EOF;
+            }
         }
     }
 }
@@ -358,9 +366,13 @@ void snake_init(void) {
     }
 
     vram_adr(NTADR_A(2, 2));
-    state.message_length = strlen(LEVELTEXT[CURRENT_LEVEL]);
+    state.message_length = strlen(LEVELTEXT[0]);
     for(ix = 0; ix<state.message_length; ++ix)  {
-        vram_put(LEVELTEXT[CURRENT_LEVEL][ix]);
+        vram_put(LEVELTEXT[0][ix]);
+    }
+    vram_adr(NTADR_A(4, 3));
+    for(ix = 0; ix<2*LEVEL_SIZE; ++ix)  {
+        vram_put(0x19);
     }
 
  
@@ -376,7 +388,7 @@ void snake_init(void) {
     y=state.level.end_y;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     state.throttle_ctr = 0;
-    state.sig_str = 40;
+    state.sig_str = 24;
     state.state = STILL;
 
     find_dirs_avail();
