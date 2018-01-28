@@ -189,7 +189,8 @@ void snake_task(void) {
             if(state.head_x != level_0_start[0]+OFFX || 
                 state.head_y != level_0_start[1]+OFFY)
             {
-                set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+                u8 c = (((state.head_y << 1) + state.head_x) & 7) << 1;
+                set_tile(state.head_x, state.head_y, 0xE0 + c); //0xA6=spacedust
             }
             collision_map[state.head_y] |= pow2[state.head_x];
             if(state.state==DOWN) {
@@ -224,15 +225,15 @@ void snake_init(void) {
         
         for(iy = 0; iy < 15; ++iy){
             for(ix = 0; ix < 16; ++ix){
-                u8 c = (ix + (iy << 1) ) % 8;
-                vram_put(0xC0 + (c << 1));
-                vram_put(0xC1 + (c << 1));
+                u8 c = (((iy << 1) + ix) & 7) << 1;
+                vram_put(0xC0 + c);
+                vram_put(0xC1 + c);
             }
             
             for(ix = 0; ix < 16; ++ix){
-                u8 c = (ix + (iy << 1) ) % 8;
-                vram_put(0xD0 + (c << 1));
-                vram_put(0xD1 + (c << 1));
+                u8 c = (((iy << 1) + ix) & 7) << 1;
+                vram_put(0xD0 + c);
+                vram_put(0xD1 + c);
             }
         }
     }
