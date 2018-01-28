@@ -11,7 +11,7 @@ CFLAGS = -t nes -Oirs
 INCLUDE = $(CC65_ROOT)/include
 ASMINC = $(CC65_ROOT)/libsrc/nes
 
-SRC = main.c ship.c snake.c titleScreen.c
+SRC = main.c ship.c snake.c titleScreen.c enemy.c
 ASMSRC = neslib/crt0.s chr_rom.s
 OBJS = $(ASMSRC:.s=.o) $(SRC:.c=.o)
 
