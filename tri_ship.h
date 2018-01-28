@@ -65,22 +65,9 @@ static const u8 TRI_LEFT_DOWN_MSPRITE[] = {
 // Map ship directions directly to the right, left, down, up input bits.
 // NULL if conflict. (ex: right and left)
 static const u8 * const TRI_DIRECTIONS[] = {
-    NULL,
-    TRI_UP_MSPRITE,
-    TRI_DOWN_MSPRITE,
-    NULL,
     TRI_LEFT_MSPRITE,
-    TRI_LEFT_UP_MSPRITE,
-    TRI_LEFT_DOWN_MSPRITE,
-    TRI_LEFT_MSPRITE,
-    TRI_RIGHT_MSPRITE,
-    TRI_RIGHT_UP_MSPRITE,
-    TRI_RIGHT_DOWN_MSPRITE,
-    TRI_RIGHT_MSPRITE,
-    NULL,
     TRI_UP_MSPRITE,
+    TRI_RIGHT_MSPRITE,
     TRI_DOWN_MSPRITE,
-    NULL,
 };
-
 
