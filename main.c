@@ -59,14 +59,13 @@ TAIL_CALL game_loop_start(void){
 			return end_level_sequence();
 		}
 
-		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
-		snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
+		snake_event(SHIP[0].x, SHIP[0].y, SHIP[0].vx, SHIP[0].vy);
+		snake_event(SHIP[1].x, SHIP[1].y, SHIP[1].vx, SHIP[1].vy);
 		ship_update(joy0, 0);
 		ship_update(joy1, 1);
 		snake_task();
 		
 		oam_hide_rest(spr_id);
-		snake_draw_task();
 #ifdef DEBUG
 		PPU.mask = mask;
 #endif
@@ -106,7 +105,7 @@ static const u8 TEXT_PALETTE[] = {
 	0x0D, 0x00, 0x10, 0x20,
 };
 
-static const char HEX[] = "0123456789ABCDEF";
+const char HEX[] = "0123456789ABCDEF";
 
 TAIL_CALL chr_debug(){
 	ppu_off(); {
