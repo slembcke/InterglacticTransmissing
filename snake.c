@@ -22,6 +22,10 @@ struct {
 #define BIG_TILE_MAX_COUNT 4
 #define POW(x) (0x0001 << (x))
 
+#define OFFX 4
+#define OFFY 3
+
+
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
 u8 up_i = 0;
 u8 block_lu[2][2];
@@ -130,7 +134,11 @@ void snake_task(void) {
         state.throttle_ctr += 1;
         if(THROTTLE==state.throttle_ctr) {
             state.throttle_ctr = 0;
-            set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+            if(state.head_x != level_0_start[0]+OFFX || 
+                state.head_y != level_0_start[1]+OFFY)
+            {
+                set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+            }
             collision_map[state.head_y] |= pow2[state.head_x];
             if(state.state==DOWN) {
                 state.head_y += 1;
@@ -145,7 +153,7 @@ void snake_task(void) {
                 state.head_x -= 1;
             }
             find_dirs_avail();
-            set_tile(state.head_x, state.head_y, 0xAA); //0xAA=satelite            
+            set_tile(state.head_x, state.head_y, '~'); //~ radiowave
         }
     }
 }
@@ -173,14 +181,20 @@ void snake_init(void) {
             }
         }
     }
-    state.head_x = level_0_x + 4;
-    state.head_y = level_0_y + 3;
+    x=level_0_start[0]+OFFX;
+    y=level_0_start[1]+OFFY;
+    state.head_x = x;
+    state.head_y = y;
+    DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
+    x=level_0_end[0]+OFFX;
+    y=level_0_end[1]+OFFY;
+    DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     state.throttle_ctr = 0;
     state.state = STILL;
-    find_dirs_avail();
 
+    find_dirs_avail();
     clear_up();
-    set_tile(state.head_x, state.head_y, 0xAA); //0xAA satelite
+    // set_tile(state.head_x, state.head_y, '~'); //~ radiowave
     set_vram_update(up_buff);
 }
 
