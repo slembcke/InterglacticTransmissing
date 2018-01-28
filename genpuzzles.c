@@ -28,7 +28,7 @@ Set(Row *board, const int x, const int y)
 static void
 PrintBoard(const int size, const Row *board)
 {
-	for(int i=size-1; i>=0; i--){
+	for(int i=0; i<size; i++){
 		printf("%X ", i);
 		for(int j=0; j<size; j++){
 			printf("%c", Get(board, j, i) ? 'o' : '.');
@@ -124,9 +124,9 @@ Splat(const int x, const int y, const int size, const Row *board)
 	
 	struct Move *moves;
 	if(l && (moves = Trace(x, y, size, board, -1,  0))) return NewMove(x, y, "left", choices, moves);
-	if(d && (moves = Trace(x, y, size, board,  0, -1))) return NewMove(x, y, "down", choices, moves);
+	if(d && (moves = Trace(x, y, size, board,  0, -1))) return NewMove(x, y, "up", choices, moves);
 	if(r && (moves = Trace(x, y, size, board,  1,  0))) return NewMove(x, y, "right", choices, moves);
-	if(u && (moves = Trace(x, y, size, board,  0,  1))) return NewMove(x, y, "up", choices, moves);
+	if(u && (moves = Trace(x, y, size, board,  0,  1))) return NewMove(x, y, "down", choices, moves);
 	
 	return NULL;
 }
@@ -202,30 +202,13 @@ PrintSolution(struct Move *moves)
 }
 
 static void
-PrintSolution2(struct Move *moves)
-{
-	int choices = 1, steps = 1;
-	for(struct Move *move = moves; move; move = move->next){
-		if(move->next){
-			choices += move->choices;
-			steps++;
-		}
-	}
-	
-	printf("Start at (%d, %d). Steps: %d. Choices if given the start: %d.\n", moves->x, moves->y, steps, choices - steps);
-}
-
-static void
 PrintAsJS(const int size, const Row *board, struct Move *moves)
 {
 	printf("\t\t{puzz:\"");
 	
-	for(int i=size-1; i>=0; i--){
-		for(int j=0; j<size; j++){
-			printf("%c", Get(board, j, i) ? '1' : '0');
-		}
-		
-		if(i > 0) printf(",");
+	for(int i=0; i<size; i++){
+		unsigned row = board[i];
+		printf("0x%04X,", row);
 	}
 	printf("\", ");
 	
