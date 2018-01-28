@@ -236,18 +236,19 @@ void snake_init(void) {
     }
     vram_adr(NTADR_A(0, 30) );
         
-    for(x=0;x<8;x++) {
-        u8 maskR = pow2[x * 2 + 1];
-        mask = pow2[x * 2];
-        for(y=0;y<8;y++) {
+    for(y=0;y<8;y++) {
+        u8 value;
+        for(x=0;x<8;x++) {
+            u16 maskR = pow2[x * 2 + 1]; // TODO: should shift by this amount instead of masking with a 16 bit number.
+            u16 maskL = pow2[x * 2];
             // collect all 4 tiles:
             // palette 0x01 is the asteroid palette 
-            u8 value = ((collision_map[y * 2]&mask ) ==mask) | ((collision_map[y * 2]&maskR)==maskR) << 2 | ((collision_map[y * 2 + 1]&mask)==mask) << 4 | ((collision_map[y * 2 + 1]&maskR)==maskR) << 6;
-            u8 attrIdx = x + y * 8;
-                    // We are on the bottom right corner of a palette tile.
-                    // if (x == 1 && y == 1){
-            vram_adr(NTADR_A(attrIdx, 30) );
-            vram_put(value);  // 01 01 01 01 
+            
+            value = ((collision_map[y * 2]&maskL ) == maskL)  
+                  | ((collision_map[y * 2]&maskR) == maskR) << 2 
+                  | ((collision_map[y * 2 + 1]&maskL) == maskL) << 4 
+                  | ((collision_map[y * 2 + 1]&maskR) == maskR) << 6;
+            vram_put(value << 1);  // 10 10 10 10
         }
     }
 
