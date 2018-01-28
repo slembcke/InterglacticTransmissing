@@ -131,6 +131,9 @@ void snake_draw_post(void) {
 void set_state(u32 new_state)
 {
     state.state = new_state;
+    if(new_state < STILL) {
+        sfx_play(2, 0);
+    }
 }
 
 void find_dirs_avail(void) {
