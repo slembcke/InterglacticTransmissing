@@ -112,10 +112,10 @@ Ship SHIP[2];
 #define SHIP_SPEED 512
 #define SHIP_ACCEL 32
 
-#define BOUNDS_L ( 16 << 8)
-#define BOUNDS_R (240 << 8)
-#define BOUNDS_T ( 16 << 8)
-#define BOUNDS_B (224 << 8)
+#define BOUNDS_L ( 8 << 8)
+#define BOUNDS_R (248 << 8)
+#define BOUNDS_T ( 8 << 8)
+#define BOUNDS_B (232 << 8)
 
 void ship_init(void){
 	SHIP[0].msprite = SHIP_UP_MSPRITE;
