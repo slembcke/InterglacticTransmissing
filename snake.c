@@ -177,7 +177,8 @@ void snake_init(void) {
         for(y=0;y<15;y++) {
             mask = pow2[x];
             if((collision_map[y]&mask)==mask) {
-                DRAWTILE_GRID(x,y,0x80); //0x80 = asteroid
+                u8 idx = (x + (y << 1)) % 8;
+                DRAWTILE(x*2,y*2,asteroidCornerIndex[idx]);
             }
         }
     }

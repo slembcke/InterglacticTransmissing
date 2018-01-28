@@ -22,9 +22,10 @@ static const char START_TEXT_3[] = "Credits";
 static const char GGJ_TEXT[] = "GGJ 2018";
 
 #define STAR_COUNT 20
-u8 starY[STAR_COUNT] = {148, 132, 90, 9, 51, 56, 39, 151, 177, 9, 91, 193, 80, 86, 116, 84, 13, 42, 75, 46};
+static u8 starY[STAR_COUNT] = {148, 132, 90, 9, 51, 56, 39, 151, 177, 9, 91, 193, 80, 86, 116, 84, 13, 42, 75, 46};
+static const u8 starSprites[] = {0x7F, 0x8E, 0x8F, 0x9E, 0x9F};
+
 u8 start_cursor = 0;
-u8 starSprites[] = {0x7F, 0x8E, 0x8F, 0x9E, 0x9F};
 
 TAIL_CALL title_loop_start(void){
 	u8 go = 1;
@@ -131,7 +132,7 @@ TAIL_CALL title_loop_start(void){
 		// Draw selection cursor:
 		oam_meta_spr_pal( (7 * 8 - 4) + clock1, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
 		for(x = 0; x < STAR_COUNT; ++x){
-			spr_id = oam_spr(x << 4, starY[x], starSprites[ (clock1 + x) % 5], 2, spr_id);
+			spr_id = oam_spr(starY[x], x << 4, starSprites[ (clock1 + x) % 5], 2 | 32, spr_id);
 			starY[x] -= x & 0x01 ? 2 : 4;
 		}
 
