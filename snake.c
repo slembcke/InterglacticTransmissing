@@ -13,6 +13,8 @@ struct {
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
     u32 sig_dir;
     u8 tiles_covered;
+    
+    Level level;
 } state;
 
 
@@ -173,19 +175,19 @@ bool snake_success(){
 const char HEX[] = "0123456789ABCDEF";
 
 u8 is_start(void) {
-    return (state.head_x != level_0_start[0]+OFFX || 
-        state.head_y != level_0_start[1]+OFFY);
+    return (state.head_x != state.level.start_x || 
+        state.head_y != state.level.start_y);
 }
 
 u8 is_end(void) {
-    return (state.head_x != level_0_end[0]+OFFX || 
-        state.head_y != level_0_end[1]+OFFY);
+    return (state.head_x != state.level.end_x || 
+        state.head_y != state.level.end_y);
 }
 
 void snake_task(void) {
     spr_id = oam_meta_spr((state.head_x*16), (state.head_y*16), spr_id, state.sig_dir);
-    if(state.head_x != level_0_start[0]+OFFX || 
-        state.head_y != level_0_start[1]+OFFY)
+    if(state.head_x != state.level.start_x || 
+        state.head_y != state.level.start_y)
     {
         if((state.sig_str > '0') && 0==(state.throttle_ctr%64)) {
             state.sig_str -= 1;
@@ -200,8 +202,8 @@ void snake_task(void) {
     }
     else {
         if(0==(state.throttle_ctr%THROTTLE)) {
-            if(state.head_x != level_0_start[0]+OFFX || 
-                state.head_y != level_0_start[1]+OFFY)
+            if(state.head_x != state.level.start_x || 
+                state.head_y != state.level.start_y)
             {
                 u8 c = (((state.head_y << 1) + state.head_x) & 7) << 1;
                 set_tile(state.head_x, state.head_y, 0xE0 + c); //0xA6=spacedust
@@ -231,11 +233,16 @@ void snake_task(void) {
 }
 
 
-
 void snake_init(void) {
-    u8 i=0;
+    register u8 i=0;
     u16 row=0x01, mask=0;
-    u8 x=0,y=0;
+    register u8 x=0,y=0;
+    
+    memcpy(&state.level, LEVELS + 0, sizeof(state.level));
+    state.level.start_x += OFFX;
+    state.level.start_y += OFFY;
+    state.level.end_x += OFFX;
+    state.level.end_y += OFFY;
     
     // Clear background with random-ish sparse stars.
     {
@@ -257,9 +264,7 @@ void snake_init(void) {
     }
     
     memfill(collision_map, 0xFF, sizeof(collision_map));
-    for(i=0;i<LEVEL_SIZE;i++) {
-        collision_map[i+2] = level_0[i];
-    }
+    memcpy(collision_map + 2, state.level.map, sizeof(state.level.map));
 
     for(x=0;x<16;x++) {
         mask = pow2[x];
@@ -290,13 +295,13 @@ void snake_init(void) {
  
     state.sig_dir = SIGNAL_UP_MSPRITE;
     state.tiles_covered = 0;
-    x=level_0_start[0]+OFFX;
-    y=level_0_start[1]+OFFY;
+    x=state.level.start_x;
+    y=state.level.start_y;
     state.head_x = x;
     state.head_y = y;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
-    x=level_0_end[0]+OFFX;
-    y=level_0_end[1]+OFFY;
+    x=state.level.end_x;
+    y=state.level.end_y;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     state.throttle_ctr = 0;
     state.sig_str = '8';
