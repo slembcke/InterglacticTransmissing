@@ -86,7 +86,7 @@ TAIL_CALL title_loop_start(void){
 
 	while(go){
 		static u8 mask;
-	 	static u8 clock1;
+	 	static u8 clock;
 		static u8 getDPAD = 1;
 	 	
 #ifdef DEBUG
@@ -129,11 +129,14 @@ TAIL_CALL title_loop_start(void){
 #ifdef DEBUG
 		PPU.mask = mask;
 #endif
-		clock1 = (nesclock() & 31) >> 2;
 		// Draw selection cursor:
-		oam_meta_spr_pal( (7 * 8 - 4) + clock1, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
+		clock = (nesclock() >> 1) & 15;
+		if(clock > 8) clock = 16 - clock;
+		oam_meta_spr_pal( (7 * 8 - 4) + clock, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
+		
+		clock = (nesclock() & 31) >> 2;
 		for(x = 0; x < STAR_COUNT; ++x){
-			spr_id = oam_spr(starY[x], x << 4, starSprites[ (clock1 + x) % 5], 2 | 32, spr_id);
+			spr_id = oam_spr(starY[x], x << 4, starSprites[ (clock + x) % 5], 2 | 32, spr_id);
 			starY[x] -= x & 0x01 ? 2 : 4;
 		}
 

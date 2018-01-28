@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"*.s": "mads",
+		"neslib.h": "c"
+	}
+}
