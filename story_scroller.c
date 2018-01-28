@@ -15,6 +15,7 @@ static const char *TEXT[] = {
 };
 
 TAIL_CALL story_scroller_start(){
+	fade_out();
 	ppu_off(); {
 		oam_clear();
 		
@@ -29,6 +30,7 @@ TAIL_CALL story_scroller_start(){
 		}
 		
 	} ppu_on_all();
+	fade_in();
 	
 	// Wait for start clear.
 	while(JOY_START(joy_read(0))){}

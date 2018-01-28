@@ -76,6 +76,9 @@ void main_event(u8, void * data);
 
 void draw_title_stars(void);
 
+void fade_out(void);
+void fade_in(void);
+
 TAIL_CALL end_level_sequence(void);
 TAIL_CALL title_loop_start(void);
 TAIL_CALL story_scroller_start(void);

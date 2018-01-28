@@ -22,6 +22,7 @@ static const char *TEXT[] = {
 };
 
 TAIL_CALL credits_start(){
+	fade_out();
 	ppu_off(); {
 		oam_clear();
 		
@@ -43,6 +44,7 @@ TAIL_CALL credits_start(){
 		vram_fill(0x05, 8);
 		
 	} ppu_on_all();
+	fade_in();
 	
 	// Wait for start clear.
 	while(JOY_START(joy_read(0))){}

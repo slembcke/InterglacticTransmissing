@@ -28,10 +28,10 @@ const u8 MAIN_PALETTE[] = {
 const u8 asteroidCornerIndex[] = {0x80,0x82,0x84,0x86,0x88,0xA0,0xA2,0x80};
 
 TAIL_CALL game_loop_start(void){
+	fade_out();
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
-		pal_bright(4);
-
+		
 		vram_inc(0);
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
@@ -40,6 +40,7 @@ TAIL_CALL game_loop_start(void){
 
 		oam_clear();
 	} ppu_on_all();
+	fade_in();
 	
 	music_select(1);
 	music_play(0);
@@ -100,12 +101,9 @@ TAIL_CALL game_loop_start(void){
 	return TERMINATOR();
 }
 
-#define FADE_SPEED 10
-TAIL_CALL end_level_sequence(){
-	music_stop();
-	sfx_play(1, 0);
-	delay(10);
+#define FADE_SPEED 5
 
+void fade_out(void){
 	// Run some neat pallete changes.
 	pal_bright(3);
 	delay(FADE_SPEED);
@@ -114,6 +112,25 @@ TAIL_CALL end_level_sequence(){
 	pal_bright(1);
 	delay(FADE_SPEED);
 	pal_bright(0);
+}
+
+void fade_in(void){
+	// Run some neat pallete changes.
+	pal_bright(1);
+	delay(FADE_SPEED);
+	pal_bright(2);
+	delay(FADE_SPEED);
+	pal_bright(3);
+	delay(FADE_SPEED);
+	pal_bright(4);
+}
+
+TAIL_CALL end_level_sequence(){
+	music_stop();
+	sfx_play(1, 0);
+	delay(10);
+
+	// fade_out();
 
 	return game_loop_start();
 }
@@ -132,6 +149,7 @@ static const u8 TEXT_PALETTE[] = {
 static const char HEX[] = "0123456789ABCDEF";
 
 TAIL_CALL chr_debug(){
+	fade_out();
 	ppu_off(); {
 		pal_all(TEXT_PALETTE);
 		oam_clear();
@@ -161,6 +179,7 @@ TAIL_CALL chr_debug(){
 			}
 		}
 	} ppu_on_all();
+	fade_in();
 	
 	music_stop();
 	
@@ -202,6 +221,7 @@ void main (void) {
 	// bank_bg(1);
 	// chr_debug();
 	
+	pal_all(MAIN_PALETTE);
 	title_loop_start();
 	game_loop_start();
 }

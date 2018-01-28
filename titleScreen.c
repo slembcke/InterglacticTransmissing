@@ -41,9 +41,8 @@ TAIL_CALL title_loop_start(void){
 	u8 x;
 	u8 y;
 
+	fade_out();
 	ppu_off(); {
-		pal_all(MAIN_PALETTE);
-		
 		vram_inc(0);
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
@@ -86,9 +85,8 @@ TAIL_CALL title_loop_start(void){
 		vram_write(START_TEXT_3, sizeof(START_TEXT_3) - 1);
 		vram_adr(NTADR_A(23, 28));
 		vram_write(GGJ_TEXT, sizeof(GGJ_TEXT) - 1);
-
-
 	} ppu_on_all();
+	fade_in();
 	
 	music_select(0);
 	music_play(0);
