@@ -81,6 +81,7 @@ TAIL_CALL title_loop_start(void){
 
 	} ppu_on_all();
 	
+	music_select(0);
 	music_play(0);
 
 	while(go){

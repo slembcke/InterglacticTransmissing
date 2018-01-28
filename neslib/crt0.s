@@ -11,6 +11,7 @@ FT_SFX_STREAMS			= 4		;number of sound effects played at once, 1..4
 
 
 	.export _exit,__STARTUP__:absolute=1
+	.export _music_select
 	.exportzp _oam_off, _spr_id = _oam_off
 	.import initlib,push0,popa,popax,_main,zerobss,copydata
 
@@ -217,11 +218,9 @@ detectNTSC:
 	sta <NTSC_MODE
 
 	jsr _ppu_off
-
-	ldx #<music_data
-	ldy #>music_data
-	lda <NTSC_MODE
-	jsr FamiToneInit
+	
+	lda #0
+	jsr _music_select
 
 .if(FT_SFX_ENABLE)
 	ldx #<sounds_data
@@ -243,21 +242,42 @@ detectNTSC:
 	.include "display.sinc"
 
 	.include "neslib.sinc"
+	
+.code
+
+.proc _music_select ; u8 song
+	asl
+	tax
+	
+	lda songs + 0, x
+	ldy songs + 1, x
+	tax
+	
+	lda <NTSC_MODE
+	jsr FamiToneInit
+	
+	rts
+.endproc
 
 .segment "RODATA"
 
-music_data:
+menu_music:
+.include "../audio/space_radar_menu.s"
+
+main_music:
 .include "../audio/space_radar.s"
+
+songs:
+	.addr menu_music
+	.addr main_music
 
 .if(FT_SFX_ENABLE)
 sounds_data:
 	.include "../audio/sounds.sinc"
 .endif
 
-; .segment "SAMPLES"
-
 .if(FT_DPCM_ENABLE)
-	.incbin "../audio/after_the_rain.dmc"
+	; .incbin "../audio/after_the_rain.dmc"
 .endif
 
 .segment "VECTORS"

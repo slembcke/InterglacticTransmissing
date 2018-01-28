@@ -38,6 +38,7 @@ TAIL_CALL game_loop_start(void){
 		oam_clear();
 	} ppu_on_all();
 	
+	music_select(1);
 	music_play(0);
 	
 	ship_init();

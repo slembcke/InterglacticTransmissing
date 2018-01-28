@@ -64,6 +64,7 @@ vram_put(tile + 0x11);
 
 extern Ship SHIP[2];
 
+void music_select(u8 song);
 TAIL_CALL chr_debug(void);
 TAIL_CALL game_loop_start(void);
 

@@ -1,15 +1,16 @@
 CFLAGS += -Wall -Wextra
 
 .phony: all clean
-all: png2chr chr2png sametiles tilecoords nes2hex pngreorder png2gba \
-	palstat coord2metasprite nesasmc nsf2data text2data \
-	coord2lz4
+all: png2chr chr2png text2data
 
 png2chr: png2chr.o common.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) -lpng
+	$(CC) -o $@ $^ $(CFLAGS) -lpng
 
 chr2png: chr2png.o common.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) -lpng
+	$(CC) -o $@ $^ $(CFLAGS) -lpng
+
+text2data: text2data.cpp
+	$(CC) -o $@ $<
 
 clean:
 	rm -f *.o png2chr chr2png
