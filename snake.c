@@ -217,6 +217,26 @@ void snake_init(void) {
     u8 i=0;
     u16 row=0x01, mask=0;
     u8 x=0,y=0;
+    
+    // Clear background with random-ish sparse stars.
+    {
+        vram_adr(NTADR_A(0, 0));
+        
+        for(iy = 0; iy < 15; ++iy){
+            for(ix = 0; ix < 16; ++ix){
+                u8 c = (ix + (iy << 1) ) % 8;
+                vram_put(0xC0 + (c << 1));
+                vram_put(0xC1 + (c << 1));
+            }
+            
+            for(ix = 0; ix < 16; ++ix){
+                u8 c = (ix + (iy << 1) ) % 8;
+                vram_put(0xD0 + (c << 1));
+                vram_put(0xD1 + (c << 1));
+            }
+        }
+    }
+    
     collision_map[0] = 0xFFFF; //map border
     collision_map[1] = 0xFFFF; //map border
     collision_map[2] = 0xFFFF; //map border
