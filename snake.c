@@ -79,9 +79,6 @@ const u16 pow2[16] = {
     POW(0), POW(1), POW(2), POW(3), POW(4), POW(5), POW(6), POW(7),
     POW(8), POW(9), POW(10), POW(11), POW(12), POW(13), POW(14), POW(15)
 };
-u8 parse_tile(u8 i, u8 j, u8 c) {
-    return c;
-}
 
 void set_tile(u8 x, u8 y, u8 c) {
     u16 tile_hi;
@@ -332,18 +329,19 @@ u8 get_dir(s16 ship_vx, s16 ship_vy) {
     u16 mag_x, mag_y;
     mag_x = abs(ship_vx);
     mag_y = abs(ship_vy);
-    if(ship_vx >=0 && mag_x >= mag_y) {
+    if(ship_vx >0 && ship_vy==0) {
         return RIGHT;
     }
-    else if(ship_vx <=0 && mag_x >= mag_y) {
+    else if(ship_vx <0 && ship_vy==0) {
         return LEFT;
     }
-    else if(ship_vy >=0 && mag_y >= mag_x) {
+    else if(ship_vy >0 && ship_vx==0) {
         return DOWN;
     }
-    else if(ship_vy <=0 && mag_y >= mag_x) {
+    else if(ship_vy <0 && ship_vx==0) {
         return UP;
     }
+    return STILL;
 }
 
 void snake_event(u8 ship_x, u8 ship_y, s16 ship_vx, s16 ship_vy)
@@ -355,16 +353,20 @@ void snake_event(u8 ship_x, u8 ship_y, s16 ship_vx, s16 ship_vy)
         16*state.head_y - 8 <= ship_y && ship_y <= 16*state.head_y + 24
     ){
         if((pow2[dir])&state.dirs_available) {
-            if(dir==EVENT_DW){
+            if(dir==STILL) {
+                // this is probably a diagonal movement
+                // but we probably don'w want to do anything in that case
+            }
+            else if(dir==EVENT_DW){
                 set_state(DOWN);
             }
-            if(dir==EVENT_UP){
+            else if(dir==EVENT_UP){
                 set_state(UP);
             }
-            if(dir==EVENT_LF){
+            else if(dir==EVENT_LF){
                 set_state(LEFT);
             }
-            if(dir==EVENT_RT){
+            else if(dir==EVENT_RT){
                 set_state(RIGHT);
             }
         }

@@ -62,6 +62,7 @@ TAIL_CALL game_loop_start(void){
 		
 		if(snake_success() == SNAKE_WIN){
 			++CURRENT_LEVEL;
+			return end_level_sequence();
 		}
 		else if(snake_success() == SNAKE_LOSS){
 			return end_level_sequence();
