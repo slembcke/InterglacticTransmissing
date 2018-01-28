@@ -17,6 +17,7 @@ struct {
     snake_status_t victory_condition;
     
     Level level;
+    u8 message_length;
 } state;
 
 
@@ -31,6 +32,19 @@ struct {
 
 #define OFFX 2
 #define OFFY 2
+
+static char *LEVELTEXT[] = {
+    "Press B: boost fading signal",
+    "This message will fade",
+    "It was fun wasn't it",
+    "I think so anyway",
+    "Is your sister still working?",
+    "Interesting life choice",
+    "I think so anyway",
+    "Thank you for transmissing",
+    NULL,
+};
+
 
 static const u8 SIGNAL_UP_MSPRITE[] = {
      0,  0, 0x8C, 0,
@@ -106,6 +120,20 @@ void set_tile(u8 x, u8 y, u8 c) {
     (up_buff + 9)[up_i] = TILECOORDS(c,1,1);
 
     up_i+= BIG_TILE_UPDATE_SIZE;
+
+    up_buff[up_i] = NT_UPD_EOF;
+}
+
+void set_tile_quarter_asteroid(u8 x, u8 y) {
+    u16 tile_hi;
+    tile_hi = NTADR_A(x, y);
+    
+    (up_buff + 0)[up_i] = NT_UPD_HORZ | (tile_hi>>8)&0xFF;
+    (up_buff + 1)[up_i] = (tile_hi>>0)&0xFF;
+    (up_buff + 2)[up_i] = 1;
+    (up_buff + 3)[up_i] = asteroidCornerIndex[(x + y<<1 ) % 8];
+
+    up_i+= 4;
 
     up_buff[up_i] = NT_UPD_EOF;
 }
@@ -193,6 +221,13 @@ void signal_died(void) {
     state.victory_condition = SNAKE_LOSS;
 }
 
+void truncate_message(u8 new_length) {
+    u8 x,y;
+    y=2; x=2+new_length;
+    state.message_length = new_length;
+    set_tile_quarter_asteroid(x, y);
+}
+
 void snake_task(void) {
     {
         register u8 x = state.head_x*16;
@@ -212,13 +247,15 @@ void snake_task(void) {
     if(state.head_x != state.level.start_x || 
         state.head_y != state.level.start_y)
     {
-        if((state.sig_str >= '0') && 0==(state.throttle_ctr%64)) {
-            if(state.sig_str == '0') {
+        if((state.sig_str >= 0) && 0==(state.throttle_ctr%16)) {
+            if(state.sig_str == 0) {
                 signal_died();
             }
             else {
                 state.sig_str -= 1;
-                set_tile(0,0, state.sig_str); //~ radiowave
+                if(state.sig_str < state.message_length) {
+                    truncate_message(state.sig_str);
+                }
             }
         }
     }
@@ -254,7 +291,7 @@ void snake_task(void) {
             }
             state.sig_dir = SIGNAL_DIRECTIONS[state.state];
             find_dirs_avail();
-            state.sig_str = '8';
+            state.sig_str = 40;
         }
     }
 }
@@ -288,6 +325,7 @@ void snake_init(void) {
                 vram_put(0xD1 + c);
             }
         }
+
     }
     
     memfill(collision_map, 0xFF, sizeof(collision_map));
@@ -319,6 +357,12 @@ void snake_init(void) {
         }
     }
 
+    vram_adr(NTADR_A(2, 2));
+    state.message_length = strlen(LEVELTEXT[CURRENT_LEVEL]);
+    for(ix = 0; ix<state.message_length; ++ix)  {
+        vram_put(LEVELTEXT[CURRENT_LEVEL][ix]);
+    }
+
  
     state.sig_dir = SIGNAL_UP_MSPRITE;
     state.tiles_covered = 0;
@@ -332,7 +376,7 @@ void snake_init(void) {
     y=state.level.end_y;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     state.throttle_ctr = 0;
-    state.sig_str = '8';
+    state.sig_str = 40;
     state.state = STILL;
 
     find_dirs_avail();
