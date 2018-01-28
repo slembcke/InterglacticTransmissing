@@ -11,7 +11,7 @@ const u16 level_0[8] = {
     0xF00F,
     0xF00F
 };
-const u8 level_0_x = 6;
-const u8 level_0_y = 6;
+const u8 level_0_start[2] = {6, 6};
+const u8 level_0_end[2] = {2, 3};
 
 #endif //#ifndef LEVELS_H__

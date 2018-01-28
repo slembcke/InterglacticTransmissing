@@ -10,22 +10,11 @@
 u8 i, ix, iy;
 u8 joy0, joy1;
 
-static const u8 MAIN_PALETTE[] = {
-	0x0D, 0x20, 0x11, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-	
-	0x0D, 0x20, 0x11, 0x01,
-	0x0D, 0x20, 0x06, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-};
-
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
-		
+		pal_bright(4);
+
 		vram_inc(0);
 		vram_adr(NTADR_A(0, 0));
 		vram_fill(0x00, 32*32);
@@ -42,14 +31,20 @@ TAIL_CALL game_loop_start(void){
 	while(true){
 		static u8 mask;
 		
+#ifdef DEBUG
 		mask = PPU.mask;
 		PPU.mask = mask | 0x01;
-		
+#endif		
 		spr_id = 0;
 		
 		joy0 = joy_read(0);
 		joy1 = joy_read(1);
 		
+		if(JOY_SELECT(joy0)){
+			// restart current level:
+			return end_level_sequence();
+		}
+
 		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
 		snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
 		ship_update(joy0, 0);
@@ -58,12 +53,32 @@ TAIL_CALL game_loop_start(void){
 		
 		oam_hide_rest(spr_id);
 		snake_draw_task();
+#ifdef DEBUG
 		PPU.mask = mask;
+#endif
 		ppu_wait_nmi();
 		snake_draw_post();
 	}
 	
 	return TERMINATOR();
+}
+
+#define FADE_SPEED 10
+TAIL_CALL end_level_sequence(){
+	music_stop();
+	sfx_play(1, 0);
+	delay(10);
+
+	// Run some neat pallete changes.
+	pal_bright(3);
+	delay(FADE_SPEED);
+	pal_bright(2);
+	delay(FADE_SPEED);
+	pal_bright(1);
+	delay(FADE_SPEED);
+	pal_bright(0);
+
+	return game_loop_start();
 }
 
 static const u8 TEXT_PALETTE[] = {
@@ -135,6 +150,7 @@ void main_event(u8 event, void * data)
 	else if(event==YOU_LOSE) {
 		// I guess you lose?
 		// queue lose event or handle
+		end_level_sequence(); // should be a tail call
 	}
 }
 

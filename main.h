@@ -12,6 +12,21 @@ typedef int32_t s32;
 typedef int16_t s16;
 typedef int8_t s8;
 
+static const u8 MAIN_PALETTE[] = {
+	0x0D, 0x20, 0x11, 0x16, // spaceship colors.
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x27, 0x07, 0x17, // asteroid colors
+	0x0D, 0x21, 0x21, 0x21, // blue for the text.
+	
+	0x0D, 0x20, 0x11, 0x16,
+	0x0D, 0x20, 0x1A, 0x16,
+	0x0D, 0x00, 0x10, 0x20,
+	0x0D, 0x00, 0x10, 0x20,
+};
+#define ASTEROID_COUNT = 8;
+static const u8 asteroidCornerIndex[] = {0x80,0x82,0x84,0x86,0x88,0xA0,0xA2,0x80};
+
+
 // Dummy return type to enforce tail calling for gamestates.
 typedef struct {} TAIL_CALL;
 // Makes the compiler happy.
@@ -67,6 +82,7 @@ void ship_init(void);
 void ship_update(u8 joy, u8 ship_idx);
 void main_event(u8, void * data);
 
+TAIL_CALL end_level_sequence(void);
 TAIL_CALL title_loop_start(void);
 
 #endif main_h__

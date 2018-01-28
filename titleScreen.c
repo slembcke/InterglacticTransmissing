@@ -7,19 +7,6 @@
 #include "main.h"
 #include "snake.h"
 
-static const u8 MAIN_PALETTE[] = {
-	0x0D, 0x20, 0x11, 0x16, // spaceship colors.
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x27, 0x07, 0x17, // asteroid colors
-	0x0D, 0x21, 0x21, 0x21, // blue for the text.
-	
-	0x0D, 0x20, 0x11, 0x16,
-	0x0D, 0x20, 0x1A, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-};
-
-
 static const u8 SHIP_RIGHT_MSPRITE[] = {
 	-8, -8, 0x82, 0,
 	 0, -8, 0x83, 0,
@@ -32,9 +19,12 @@ static const char TITLE_TEXT[] = "Intergalactic Transmissing!";
 static const char START_TEXT_1[] = "One Player";
 static const char START_TEXT_2[] = "Two Player";
 static const char START_TEXT_3[] = "Credits";
+static const char GGJ_TEXT[] = "GGJ 2018";
 
 #define STAR_COUNT 20
-u8 starY[STAR_COUNT] = {148, 132, 90, 9, 51, 56, 39, 151, 177, 9, 91, 193, 80, 86, 116, 84, 13, 42, 75, 46};
+static u8 starY[STAR_COUNT] = {148, 132, 90, 9, 51, 56, 39, 151, 177, 9, 91, 193, 80, 86, 116, 84, 13, 42, 75, 46};
+static const u8 starSprites[] = {0x7F, 0x8E, 0x8F, 0x9E, 0x9F};
+
 u8 start_cursor = 0;
 
 TAIL_CALL title_loop_start(void){
@@ -85,6 +75,8 @@ TAIL_CALL title_loop_start(void){
 		vram_write(START_TEXT_2, sizeof(START_TEXT_2) - 1);
 		vram_adr(NTADR_A(9, 24));
 		vram_write(START_TEXT_3, sizeof(START_TEXT_3) - 1);
+		vram_adr(NTADR_A(23, 28));
+		vram_write(GGJ_TEXT, sizeof(GGJ_TEXT) - 1);
 
 
 	} ppu_on_all();
@@ -96,8 +88,10 @@ TAIL_CALL title_loop_start(void){
 	 	static u8 clock1;
 		static u8 getDPAD = 1;
 	 	
+#ifdef DEBUG
 		mask = PPU.mask;
 		PPU.mask = mask | 0x01;
+#endif
 		
 		spr_id = 0;
 		
@@ -131,13 +125,14 @@ TAIL_CALL title_loop_start(void){
 		}
 		
 		oam_hide_rest(spr_id);
+#ifdef DEBUG
 		PPU.mask = mask;
-
+#endif
 		clock1 = (nesclock() & 31) >> 2;
 		// Draw selection cursor:
 		oam_meta_spr_pal( (7 * 8 - 4) + clock1, (20 * 8 + 2) + 16 * start_cursor, 0, SHIP_RIGHT_MSPRITE);
 		for(x = 0; x < STAR_COUNT; ++x){
-			spr_id = oam_spr(x << 4, starY[x], x & 0x01 ? 0x2A : 0x2B, 2, spr_id);
+			spr_id = oam_spr(starY[x], x << 4, starSprites[ (clock1 + x) % 5], 2 | 32, spr_id);
 			starY[x] -= x & 0x01 ? 2 : 4;
 		}
 
