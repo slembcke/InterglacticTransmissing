@@ -61,7 +61,9 @@ void enemy_init(void) {
         enemy[1].directions = ANG_DIRECTIONS;
     } else
     {
-        bogie_count=CURRENT_LEVEL-2;
+        bogie_count=MAX_BOGIES;
+        if(CURRENT_LEVEL-2 < MAX_BOGIES)
+            bogie_count=CURRENT_LEVEL-2;
 
         enemy[0].top=3;
         enemy[0].bottom=13;
