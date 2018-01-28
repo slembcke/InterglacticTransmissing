@@ -11,6 +11,7 @@ struct {
     u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
+    u32 sig_dir;
 } state;
 
 
@@ -25,6 +26,45 @@ struct {
 
 #define OFFX 4
 #define OFFY 3
+
+static const u8 SIGNAL_UP_MSPRITE[] = {
+     0,  0, 0x8C, 0,
+     8,  0, 0x8D, 0,
+     0,  8, 0x9C, 0,
+     8,  8, 0x9D, 0,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_DOWN_MSPRITE[] = {
+     0,  0, 0x9C, SPR_FLIP_Y,
+     8,  0, 0x9D, SPR_FLIP_Y,
+     0,  8, 0x8C, SPR_FLIP_Y,
+     8,  8, 0x8D, SPR_FLIP_Y,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_RIGHT_MSPRITE[] = {
+     0,  0, 0xAC, 0,
+     8,  0, 0xAD, 0,
+     0,  8, 0xBC, 0,
+     8,  8, 0xBD, 0,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_LEFT_MSPRITE[] = {
+     0,  0, 0xAC, SPR_FLIP_X,
+     8,  0, 0xAD, SPR_FLIP_X,
+     0,  8, 0xBC, SPR_FLIP_X,
+     8,  8, 0xBD, SPR_FLIP_X,
+    MSPRITE_END
+};
+
+static const u8 * const SIGNAL_DIRECTIONS[] = {
+    SIGNAL_UP_MSPRITE,
+    SIGNAL_DOWN_MSPRITE,
+    SIGNAL_LEFT_MSPRITE,
+    SIGNAL_RIGHT_MSPRITE,
+};
 
 
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
@@ -126,12 +166,14 @@ const char HEX[] = "0123456789ABCDEF";
 
 void snake_task(void) {
 
+    spr_id = oam_meta_spr((state.head_x*16), (state.head_y*16), spr_id, state.sig_dir);
     if(state.head_x != level_0_start[0]+OFFX || 
         state.head_y != level_0_start[1]+OFFY)
     {
         if((state.sig_str > '0') && 0==(state.throttle_ctr%64)) {
             state.sig_str -= 1;
-            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
+            //TODO
+            // set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
         }
     }
     state.throttle_ctr += 1;
@@ -159,8 +201,8 @@ void snake_task(void) {
             if(state.state==LEFT) {
                 state.head_x -= 1;
             }
+            state.sig_dir = SIGNAL_DIRECTIONS[state.state];
             find_dirs_avail();
-            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
             state.sig_str = '8';
         }
     }
@@ -193,8 +235,8 @@ void snake_init(void) {
         }
     }
     vram_adr(NTADR_A(0, 30) );
-            
-     for(x=0;x<8;x++) {
+        
+    for(x=0;x<8;x++) {
         u8 maskR = pow2[x * 2 + 1];
         mask = pow2[x * 2];
         for(y=0;y<8;y++) {
@@ -207,7 +249,10 @@ void snake_init(void) {
             vram_adr(NTADR_A(attrIdx, 30) );
             vram_put(value);  // 01 01 01 01 
         }
-     }
+    }
+
+ 
+    state.sig_dir = SIGNAL_UP_MSPRITE;
     x=level_0_start[0]+OFFX;
     y=level_0_start[1]+OFFY;
     state.head_x = x;
