@@ -247,7 +247,7 @@ detectNTSC:
 .segment "RODATA"
 
 music_data:
-.include "../audio/after_the_rain.sinc"
+.include "../audio/space_radar.s"
 
 .if(FT_SFX_ENABLE)
 sounds_data:
