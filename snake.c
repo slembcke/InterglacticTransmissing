@@ -7,6 +7,7 @@
 
 struct {
     u8 head_x, head_y;
+    u8 sig_str;
     u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
@@ -125,15 +126,21 @@ const char HEX[] = "0123456789ABCDEF";
 
 void snake_task(void) {
 
+    if(state.head_x != level_0_start[0]+OFFX || 
+        state.head_y != level_0_start[1]+OFFY)
+    {
+        if((state.sig_str > '0') && 0==(state.throttle_ctr%64)) {
+            state.sig_str -= 1;
+            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
+        }
+    }
+    state.throttle_ctr += 1;
     if(!(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
-        state.throttle_ctr=0;
     }
     else {
-        state.throttle_ctr += 1;
-        if(THROTTLE==state.throttle_ctr) {
-            state.throttle_ctr = 0;
+        if(0==(state.throttle_ctr%THROTTLE)) {
             if(state.head_x != level_0_start[0]+OFFX || 
                 state.head_y != level_0_start[1]+OFFY)
             {
@@ -153,7 +160,8 @@ void snake_task(void) {
                 state.head_x -= 1;
             }
             find_dirs_avail();
-            set_tile(state.head_x, state.head_y, '~'); //~ radiowave
+            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
+            state.sig_str = '8';
         }
     }
 }
@@ -191,6 +199,7 @@ void snake_init(void) {
     y=level_0_end[1]+OFFY;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     state.throttle_ctr = 0;
+    state.sig_str = '8';
     state.state = STILL;
 
     find_dirs_avail();
