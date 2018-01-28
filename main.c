@@ -61,11 +61,11 @@ TAIL_CALL game_loop_start(void){
 			return end_level_sequence();
 		}
 
-		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
+		if(JOY_BTN_2(joy0)) snake_event(SHIP[0].x>>8, SHIP[0].y>>8, SHIP[0].vx, SHIP[0].vy);
 		ship_update(joy0, 0);
 		
 		if(TWO_PLAYER){
-			snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
+			if(JOY_BTN_2(joy1)) snake_event(SHIP[1].x>>8, SHIP[1].y>>8, SHIP[1].vx, SHIP[1].vy);
 			ship_update(joy1, 1);
 		}
 		

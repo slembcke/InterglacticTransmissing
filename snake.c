@@ -314,16 +314,14 @@ u8 get_dir(s16 ship_vx, s16 ship_vy) {
     }
 }
 
-void snake_event(u8 ship_x_raw, u8 ship_y_raw, s16 ship_vx, s16 ship_vy)
+void snake_event(u8 ship_x, u8 ship_y, s16 ship_vx, s16 ship_vy)
 {
-    u8 ship_x;
-    u8 ship_y;
-    u8 dir;
+    u8 dir = get_dir(ship_vx, ship_vy);
 
-    ship_y = ship_y_raw/8;
-    ship_x = ship_x_raw/8;
-    dir = get_dir(ship_vx, ship_vy);
-    if(ship_x==state.head_x && ship_y==state.head_y) {
+    if(
+        16*state.head_x - 8 <= ship_x && ship_x <= 16*state.head_x + 24 &&
+        16*state.head_y - 8 <= ship_y && ship_y <= 16*state.head_y + 24
+    ){
         if((pow2[dir])&state.dirs_available) {
             if(dir==EVENT_DW){
                 set_state(DOWN);
