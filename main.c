@@ -59,8 +59,10 @@ TAIL_CALL game_loop_start(void){
 		joy0 = joy_read(0);
 		joy1 = joy_read(1);
 		
-		if(snake_success()){
+		if(snake_success() == SNAKE_WIN){
 			++CURRENT_LEVEL;
+		}
+		else if(snake_success() == SNAKE_LOSS){
 			return end_level_sequence();
 		}
 		
