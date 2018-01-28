@@ -10,18 +10,6 @@
 u8 i, ix, iy;
 u8 joy0, joy1;
 
-static const u8 MAIN_PALETTE[] = {
-	0x0D, 0x20, 0x11, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-	
-	0x0D, 0x20, 0x11, 0x01,
-	0x0D, 0x20, 0x06, 0x16,
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x00, 0x10, 0x20,
-};
-
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
 		pal_all(MAIN_PALETTE);
@@ -51,6 +39,11 @@ TAIL_CALL game_loop_start(void){
 		joy0 = joy_read(0);
 		joy1 = joy_read(1);
 		
+		if(JOY_SELECT(joy0)){
+			// restart current level:
+			return end_level_sequence();
+		}
+
 		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
 		snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
 		ship_update(joy0, 0);
@@ -67,6 +60,17 @@ TAIL_CALL game_loop_start(void){
 	}
 	
 	return TERMINATOR();
+}
+
+TAIL_CALL end_level_sequence(){
+	music_stop();
+	sfx_play(1, 0);
+	delay(10);
+
+	// Run some neat pallete changes.
+	
+
+	return game_loop_start();
 }
 
 static const u8 TEXT_PALETTE[] = {
