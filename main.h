@@ -13,10 +13,8 @@ typedef int16_t s16;
 typedef int8_t s8;
 
 extern const u8 MAIN_PALETTE[];
-
 #define ASTEROID_COUNT = 8;
-static const u8 asteroidCornerIndex[] = {0x80,0x82,0x84,0x86,0x88,0xA0,0xA2,0x80};
-
+extern const u8 asteroidCornerIndex[];
 
 // Dummy return type to enforce tail calling for gamestates.
 typedef struct {} TAIL_CALL;
@@ -53,7 +51,7 @@ vram_put(tile + 0x10);\
 vram_adr(NTADR_A(((x)<<1)+1, ((y)<<1)+1));\
 vram_put(tile+0x11);
 
-
+extern const char HEX[];
 
 #define DRAWTILE(x,y,tile) vram_adr(NTADR_A(x, y));\
 vram_put(tile);\

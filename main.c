@@ -11,9 +11,9 @@ u8 i, ix, iy;
 u8 joy0, joy1;
 
 const u8 MAIN_PALETTE[] = {
-	0x0D, 0x20, 0x11, 0x16, // spaceship colors.
-	0x0D, 0x00, 0x10, 0x20,
-	0x0D, 0x27, 0x07, 0x17, // asteroid colors.
+	0x0D, 0x20, 0x11, 0x16, // spaceship colors. Probably not really used.
+	0x0D, 0x00, 0x10, 0x20, // greyscale stuff.. ? not sure what this is for.
+	0x0D, 0x27, 0x07, 0x17, // asteroid colors
 	0x0D, 0x21, 0x21, 0x21, // blue for the text.
 	
 	0x0D, 0x20, 0x11, 0x01, // P1 palette.
@@ -21,6 +21,8 @@ const u8 MAIN_PALETTE[] = {
 	0x0D, 0x00, 0x10, 0x20,
 	0x0D, 0x00, 0x10, 0x20,
 };
+
+const u8 asteroidCornerIndex[] = {0x80,0x82,0x84,0x86,0x88,0xA0,0xA2,0x80};
 
 TAIL_CALL game_loop_start(void){
 	ppu_off(); {
@@ -45,7 +47,7 @@ TAIL_CALL game_loop_start(void){
 		
 #ifdef DEBUG
 		mask = PPU.mask;
-		PPU.mask = mask | 0x01;
+		// PPU.mask = mask | 0x01;
 #endif		
 		spr_id = 0;
 		
@@ -57,14 +59,13 @@ TAIL_CALL game_loop_start(void){
 			return end_level_sequence();
 		}
 
-		snake_event(SHIP[0].x>>9, SHIP[0].y>>9, SHIP[0].vx, SHIP[0].vy);
-		snake_event(SHIP[1].x>>9, SHIP[1].y>>9, SHIP[1].vx, SHIP[1].vy);
+		snake_event(SHIP[0].x, SHIP[0].y, SHIP[0].vx, SHIP[0].vy);
+		snake_event(SHIP[1].x, SHIP[1].y, SHIP[1].vx, SHIP[1].vy);
 		ship_update(joy0, 0);
 		ship_update(joy1, 1);
 		snake_task();
 		
 		oam_hide_rest(spr_id);
-		snake_draw_task();
 #ifdef DEBUG
 		PPU.mask = mask;
 #endif
@@ -104,7 +105,7 @@ static const u8 TEXT_PALETTE[] = {
 	0x0D, 0x00, 0x10, 0x20,
 };
 
-static const char HEX[] = "0123456789ABCDEF";
+const char HEX[] = "0123456789ABCDEF";
 
 TAIL_CALL chr_debug(){
 	ppu_off(); {

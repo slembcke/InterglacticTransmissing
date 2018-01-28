@@ -6,11 +6,12 @@
 #define THROTTLE (4)
 
 struct {
-    u8 head_x, head_y;
+    u16 signal_x, signal_y;
     u8 sig_str;
     u8 throttle_ctr;
     u8 dirs_available;
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
+    u32 sig_dir;
 } state;
 
 
@@ -18,6 +19,7 @@ struct {
 #define SNAKE_BODY 0x15
 #define MIN_COORD 1
 #define MAX_COORD 14
+#define SIG_DELTA 0x20
 
 #define BIG_TILE_UPDATE_SIZE 10
 #define BIG_TILE_MAX_COUNT 4
@@ -25,6 +27,45 @@ struct {
 
 #define OFFX 4
 #define OFFY 3
+
+static const u8 SIGNAL_UP_MSPRITE[] = {
+     0,  0, 0x8C, 0,
+     8,  0, 0x8D, 0,
+     0,  8, 0x9C, 0,
+     8,  8, 0x9D, 0,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_DOWN_MSPRITE[] = {
+     0,  0, 0x9C, SPR_FLIP_Y,
+     8,  0, 0x9D, SPR_FLIP_Y,
+     0,  8, 0x8C, SPR_FLIP_Y,
+     8,  8, 0x8D, SPR_FLIP_Y,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_RIGHT_MSPRITE[] = {
+     0,  0, 0xAC, 0,
+     8,  0, 0xAD, 0,
+     0,  8, 0xBC, 0,
+     8,  8, 0xBD, 0,
+    MSPRITE_END
+};
+
+static const u8 SIGNAL_LEFT_MSPRITE[] = {
+     0,  0, 0xAC, SPR_FLIP_X,
+     8,  0, 0xAD, SPR_FLIP_X,
+     0,  8, 0xBC, SPR_FLIP_X,
+     8,  8, 0xBD, SPR_FLIP_X,
+    MSPRITE_END
+};
+
+static const u8 * const SIGNAL_DIRECTIONS[] = {
+    SIGNAL_UP_MSPRITE,
+    SIGNAL_DOWN_MSPRITE,
+    SIGNAL_LEFT_MSPRITE,
+    SIGNAL_RIGHT_MSPRITE,
+};
 
 
 u8 up_buff[BIG_TILE_UPDATE_SIZE*BIG_TILE_MAX_COUNT];
@@ -73,17 +114,6 @@ void clear_up(void) {
     up_i=0;
 }
 
-void snake_draw_task(void) {
-    // TODO actually draw snake
-    // May need to rearrange this
-    // ppu_off(); {
-    //     vram_adr(NTADR_A(state.head_x, state.head_y));
-    //     // vram_adr(NTADR_A(7, 7));
-    //     vram_put(0x14);
-        
-    // } ppu_on_all();
-}
-
 void snake_draw_post(void) {
     clear_up();
 }
@@ -97,14 +127,14 @@ void find_dirs_avail(void) {
     u16 row=0;
     u16 mask, left, right, above, below;
 
-    row = collision_map[state.head_y];
-    mask = pow2[state.head_x];
+    row = collision_map[state.signal_y >> 12];
+    mask = pow2[state.signal_x >> 12];
     left = mask >> 1;
     left &= row;
     right = mask << 1;
     right &= row;
-    above = (collision_map-1)[state.head_y];
-    below = (collision_map+1)[state.head_y];
+    above = (collision_map-1)[state.signal_y >> 12];
+    below = (collision_map+1)[state.signal_y >> 12];
     
     state.dirs_available = 0;
     
@@ -124,47 +154,55 @@ void find_dirs_avail(void) {
 
 const char HEX[] = "0123456789ABCDEF";
 
-void snake_task(void) {
+bool is_start_position(void) {
+    return((state.signal_x>>12) == level_0_start[0]+OFFX && 
+        (state.signal_y>>12) ==level_0_start[1]+OFFY);
+}
 
-    if(state.head_x != level_0_start[0]+OFFX || 
-        state.head_y != level_0_start[1]+OFFY)
-    {
+void snake_task(void) {
+    spr_id = oam_meta_spr((state.signal_x>>8), (state.signal_y>>8), spr_id, SIGNAL_DIRECTIONS[state.sig_dir]);
+    if(!is_start_position()) {
         if((state.sig_str > '0') && 0==(state.throttle_ctr%64)) {
             state.sig_str -= 1;
-            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
+            //TODO //Represent signal strength
+            set_tile(0, 0, state.sig_str); //~ radiowave
         }
     }
     state.throttle_ctr += 1;
-    if(!(state.dirs_available & pow2[state.state]))
+    if((state.state < STILL) && !(state.dirs_available & pow2[state.state]))
     {
         set_state(STILL);
     }
     else {
-        if(0==(state.throttle_ctr%THROTTLE)) {
-            if(state.head_x != level_0_start[0]+OFFX || 
-                state.head_y != level_0_start[1]+OFFY)
-            {
-                set_tile(state.head_x, state.head_y, 0xA6); //0xA6=spacedust
+        // if(0==(state.throttle_ctr%THROTTLE)) 
+        {
+            if(!is_start_position()) {
+                set_tile(state.signal_x>>12, state.signal_y>>12, 0xA6); //0xA6=spacedust
             }
-            collision_map[state.head_y] |= pow2[state.head_x];
+            collision_map[state.signal_y>>12] |= pow2[state.signal_x>>12];
             if(state.state==DOWN) {
-                state.head_y += 1;
+                state.signal_y += SIG_DELTA;
+                state.sig_dir = state.state;
             }
             if(state.state==UP) {
-                state.head_y -= 1;
+                state.signal_y -= SIG_DELTA;
+                state.sig_dir = state.state;
             }
             if(state.state==RIGHT) {
-                state.head_x += 1;
+                state.signal_x += SIG_DELTA;
+                state.sig_dir = state.state;
             }
             if(state.state==LEFT) {
-                state.head_x -= 1;
+                state.signal_x -= SIG_DELTA;
+                state.sig_dir = state.state;
             }
             find_dirs_avail();
-            set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
             state.sig_str = '8';
         }
     }
 }
+
+
 
 void snake_init(void) {
     u8 i=0;
@@ -181,19 +219,39 @@ void snake_init(void) {
     for(i=0;i<8;i++) {
         collision_map[i+3] = level_0[i];
     }
+
     for(x=0;x<16;x++) {
+        mask = pow2[x];
         for(y=0;y<15;y++) {
-            mask = pow2[x];
-            if((collision_map[y]&mask)==mask) {
-                u8 idx = (x + (y << 1)) % 8;
-                DRAWTILE(x*2,y*2,asteroidCornerIndex[idx]);
+            if( (collision_map[y]&mask)==mask) {
+                DRAWTILE(x*2,y*2, asteroidCornerIndex[(x + (y << 1) ) % 8] );
             }
         }
     }
+    vram_adr(NTADR_A(0, 30) );
+        
+    for(y=0;y<8;y++) {
+        u8 value;
+        for(x=0;x<8;x++) {
+            u16 maskR = pow2[x * 2 + 1]; // TODO: should shift by this amount instead of masking with a 16 bit number.
+            u16 maskL = pow2[x * 2];
+            // collect all 4 tiles:
+            // palette 0x01 is the asteroid palette 
+            
+            value = ((collision_map[y * 2]&maskL ) == maskL)  
+                  | ((collision_map[y * 2]&maskR) == maskR) << 2 
+                  | ((collision_map[y * 2 + 1]&maskL) == maskL) << 4 
+                  | ((collision_map[y * 2 + 1]&maskR) == maskR) << 6;
+            vram_put(value << 1);  // 10 10 10 10
+        }
+    }
+
+ 
+    state.sig_dir = UP;
     x=level_0_start[0]+OFFX;
     y=level_0_start[1]+OFFY;
-    state.head_x = x;
-    state.head_y = y;
+    state.signal_x = (x<<(8+4));
+    state.signal_y = (y<<(8+4));
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
     x=level_0_end[0]+OFFX;
     y=level_0_end[1]+OFFY;
@@ -203,8 +261,6 @@ void snake_init(void) {
     state.state = STILL;
 
     find_dirs_avail();
-    clear_up();
-    // set_tile(state.head_x, state.head_y, '~'); //~ radiowave
     set_vram_update(up_buff);
 }
 
@@ -226,16 +282,12 @@ u8 get_dir(s16 ship_vx, s16 ship_vy) {
     }
 }
 
-void snake_event(u8 ship_x_raw, u8 ship_y_raw, s16 ship_vx, s16 ship_vy)
+void snake_event(u16 ship_x, u16 ship_y, s16 ship_vx, s16 ship_vy)
 {
-    u8 ship_x;
-    u8 ship_y;
     u8 dir;
 
-    ship_y = ship_y_raw/8;
-    ship_x = ship_x_raw/8;
     dir = get_dir(ship_vx, ship_vy);
-    if(ship_x==state.head_x && ship_y==state.head_y) {
+    if((ship_x>>12)==(state.signal_x>>12) && (ship_y>>12)==(state.signal_y>>12)) {
         if((pow2[dir])&state.dirs_available) {
             if(dir==EVENT_DW){
                 set_state(DOWN);
