@@ -24,8 +24,8 @@ struct {
 #define BIG_TILE_MAX_COUNT 4
 #define POW(x) (0x0001 << (x))
 
-#define OFFX 4
-#define OFFY 3
+#define OFFX 2
+#define OFFY 2
 
 static const u8 SIGNAL_UP_MSPRITE[] = {
      0,  0, 0x8C, 0,
@@ -246,8 +246,8 @@ void snake_init(void) {
     collision_map[13] = 0xFFFF; //map border
     collision_map[14] = 0xFFFF; //map border
     collision_map[15] = 0xFFFF; //map border
-    for(i=0;i<8;i++) {
-        collision_map[i+3] = level_0[i];
+    for(i=0;i<12;i++) {
+        collision_map[i+2] = level_0[i];
     }
 
     for(x=0;x<16;x++) {

@@ -190,11 +190,11 @@ PrintSolution(struct Move *moves)
 	
 	for(struct Move *move = moves; move; move = move->next){
 		if(move->next){
-			printf("% 2d) Go %s. (%d choices)\n", steps + 1, move->dir, move->choices);
+			printf("% 2d) (%d, %d): Go %s. (%d choices)\n", steps + 1, move->x, move->y, move->dir, move->choices);
 			choices += move->choices;
 			steps++;
 		} else {
-			printf("Puzzle completed.\n");
+			printf("Puzzle completed (%d, %d).\n", move->x, move->y);
 		}
 	}
 	
@@ -208,7 +208,7 @@ PrintAsJS(const int size, const Row *board, struct Move *moves)
 	
 	for(int i=0; i<size; i++){
 		unsigned row = board[i];
-		printf("0x%04X,", row);
+		printf("0x%04X,", (row << 2) | 0xC003);
 	}
 	printf("\", ");
 	
