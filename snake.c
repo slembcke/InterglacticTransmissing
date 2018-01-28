@@ -208,13 +208,13 @@ snake_status_t snake_success(){
 const char HEX[] = "0123456789ABCDEF";
 
 u8 is_start(void) {
-    return (state.head_x != state.level.start_x || 
-        state.head_y != state.level.start_y);
+    return (state.head_x == state.level.start_x &&
+        state.head_y == state.level.start_y);
 }
 
 u8 is_end(void) {
-    return (state.head_x != state.level.end_x || 
-        state.head_y != state.level.end_y);
+    return (state.head_x == state.level.end_x &&
+        state.head_y == state.level.end_y);
 }
 
 void signal_died(void) {
@@ -237,8 +237,7 @@ void snake_task(void) {
         oam_meta_spr_pal(x, y, 0, state.sig_dir);
     }
     
-    if(state.head_x != state.level.start_x || 
-        state.head_y != state.level.start_y)
+    if(!is_start())
     {
         if((state.sig_str >= 0) && 0==(state.throttle_ctr%16)) {
             if(state.sig_str == 0) {
@@ -264,8 +263,7 @@ void snake_task(void) {
     }
     else {
         if(0==(state.throttle_ctr%THROTTLE)) {
-            if(state.head_x != state.level.start_x || 
-                state.head_y != state.level.start_y)
+            if(!is_start() && !is_end())
             {
                 u8 c = (((state.head_y << 1) + state.head_x) & 7) << 1;
                 set_tile(state.head_x, state.head_y, 0xE0 + c); //0xA6=spacedust
