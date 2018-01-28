@@ -273,7 +273,7 @@ songs:
 
 .if(FT_SFX_ENABLE)
 sounds_data:
-	.include "../audio/sounds.sinc"
+	.include "../audio/sounds_troy.s"
 .endif
 
 .if(FT_DPCM_ENABLE)
