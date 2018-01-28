@@ -76,5 +76,6 @@ void main_event(u8, void * data);
 
 TAIL_CALL end_level_sequence(void);
 TAIL_CALL title_loop_start(void);
+TAIL_CALL story_scroller_start(void);
 
 #endif main_h__

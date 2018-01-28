@@ -99,8 +99,8 @@ TAIL_CALL title_loop_start(void){
 		
 		if(JOY_START(joy0)){
 			switch(start_cursor){
-				case 0: TWO_PLAYER = false; return game_loop_start();
-				case 1: TWO_PLAYER = true; return game_loop_start();
+				case 0: TWO_PLAYER = false; return story_scroller_start();
+				case 1: TWO_PLAYER = true; return story_scroller_start();
 				default: return chr_debug();
 			}
 			return game_loop_start();

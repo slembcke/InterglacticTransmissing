@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"*.s": "mads",
-		"neslib.h": "c"
+		"neslib.h": "c",
+		"joystick.h": "c"
 	}
 }
