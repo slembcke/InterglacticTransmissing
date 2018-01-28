@@ -21,6 +21,7 @@ typedef struct {} TAIL_CALL;
 // Makes the compiler happy.
 static TAIL_CALL TERMINATOR(void){return TERMINATOR();}
 
+extern bool TWO_PLAYER;
 extern u8 i, ix, iy;
 extern u8 spr_id, joy0, joy1;
 #pragma zpsym("spr_id")

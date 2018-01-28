@@ -28,7 +28,6 @@ static const u8 starSprites[] = {0x7F, 0x8E, 0x8F, 0x9E, 0x9F};
 u8 start_cursor = 0;
 
 TAIL_CALL title_loop_start(void){
-	u8 go = 1;
 	u8 x;
 	u8 y;
 
@@ -84,7 +83,7 @@ TAIL_CALL title_loop_start(void){
 	music_select(0);
 	music_play(0);
 
-	while(go){
+	while(true){
 		static u8 mask;
 	 	static u8 clock;
 		static u8 getDPAD = 1;
@@ -99,10 +98,12 @@ TAIL_CALL title_loop_start(void){
 		joy0 = joy_read(0);
 		
 		if(JOY_START(joy0)){
-			if(start_cursor == 2){
-				return chr_debug();
+			switch(start_cursor){
+				case 0: TWO_PLAYER = false; return game_loop_start();
+				case 1: TWO_PLAYER = true; return game_loop_start();
+				default: return chr_debug();
 			}
-			return game_loop_start();		
+			return game_loop_start();
 		} else if(JOY_DOWN(joy0)){
 			if(getDPAD){
 				sfx_play(0, 0);
