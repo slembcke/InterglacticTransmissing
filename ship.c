@@ -92,6 +92,21 @@ static const u8 * const SHIP_DIRECTIONS[] = {
 	NULL,
 };
 
+// Fire offsets.
+static const u8 FX[] = {
+	0, -4, -4, 0,
+	6, 1, 1, 6,
+	-14, -9, -9, -14,
+	0, -4, -4, 0,
+};
+
+static const u8 FY[] = {
+	0, 6, -14, 0,
+	-4, 1, -9, -4,
+	-4, 1, -9, -4,
+	0, 6, -14, 0,
+};
+
 Ship SHIP[2];
 
 #define SHIP_SPEED 512
@@ -113,6 +128,7 @@ void ship_init(void){
 }
 
 void ship_update(u8 joy, u8 ship_idx){
+	static u8 fire;
 	static const u8 *msprite;
 	static Ship ship;
 	ship = SHIP[ship_idx];
@@ -149,6 +165,13 @@ void ship_update(u8 joy, u8 ship_idx){
 		ship.y = BOUNDS_B;
 	}
 	
-	oam_meta_spr_pal((ship.x >> 8), (ship.y >> 8), ship_idx, ship.msprite);
 	SHIP[ship_idx] = ship;
+	
+	oam_meta_spr_pal((ship.x >> 8), (ship.y >> 8), ship_idx, ship.msprite);
+	
+	if(joy){
+		register fx = (ship.x >> 8) + FX[joy >> 4], fy = (ship.y >> 8) + FY[joy >> 4];
+		spr_id = oam_spr(fx, fy, 0xCC + (fire & 0x3), ((fire & 0xC) << 4) | (!ship_idx), spr_id);
+		++fire;
+	}
 }
