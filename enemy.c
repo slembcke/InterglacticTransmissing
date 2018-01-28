@@ -35,8 +35,9 @@ struct  {
 
 
 void enemy_init(void) {
-    if(CURRENT_LEVEL==0) {
-        bogie_count=1;
+    bogie_count=CURRENT_LEVEL;
+
+    if(CURRENT_LEVEL<=2) {
         enemy[0].top=0;
         enemy[0].bottom=16;
         enemy[0].left=3;
@@ -47,9 +48,21 @@ void enemy_init(void) {
         enemy[0].go = GO_UP;
         enemy[0].rotation = PATROL;
         enemy[0].directions = ANG_DIRECTIONS;
+
+        enemy[1].top=0;
+        enemy[1].bottom=16;
+        enemy[1].left=0;
+        enemy[1].right=16;
+        enemy[1].x=8<<4;
+        enemy[1].y=8<<4;
+        enemy[1].msprite = BLUE_DIRECTIONS[1];
+        enemy[1].go = GO_LEFT;
+        enemy[1].rotation = PATROL;
+        enemy[1].directions = ANG_DIRECTIONS;
     } else
     {
-        bogie_count=4;
+        bogie_count=CURRENT_LEVEL-2;
+
         enemy[0].top=3;
         enemy[0].bottom=13;
         enemy[0].left=3;
