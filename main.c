@@ -6,6 +6,7 @@
 
 #include "main.h"
 #include "snake.h"
+#include "enemy.h"
 
 bool TWO_PLAYER;
 u8 CURRENT_LEVEL;
@@ -20,7 +21,7 @@ const u8 MAIN_PALETTE[] = {
 	
 	0x0D, 0x20, 0x11, 0x01, // P1 palette.
 	0x0D, 0x20, 0x17, 0x07, // P2 palette.
-	0x0D, 0x00, 0x10, 0x20,
+	0x09, 0x06, 0x16, 0x19, // Enemy
 	0x0D, 0x00, 0x10, 0x20,
 };
 
@@ -44,6 +45,7 @@ TAIL_CALL game_loop_start(void){
 	music_play(0);
 	
 	ship_init();
+	enemy_init();
 	
 	while(true){
 		static u8 mask;
@@ -57,8 +59,10 @@ TAIL_CALL game_loop_start(void){
 		joy0 = joy_read(0);
 		joy1 = joy_read(1);
 		
-		if(snake_success()){
+		if(snake_success() == SNAKE_WIN){
 			++CURRENT_LEVEL;
+		}
+		else if(snake_success() == SNAKE_LOSS){
 			return end_level_sequence();
 		}
 		
@@ -74,9 +78,16 @@ TAIL_CALL game_loop_start(void){
 			if(JOY_BTN_2(joy1)) snake_event(SHIP[1].x>>8, SHIP[1].y>>8, SHIP[1].vx, SHIP[1].vy);
 			ship_update(joy1, 1);
 		}
+		if((enemy_event(SHIP[0].x>>8, SHIP[0].y>>8) == ENEMY_LOSS) ||
+		   (enemy_event(SHIP[1].x>>8, SHIP[1].y>>8) == ENEMY_LOSS))
+		{
+			return end_level_sequence();
+		}
+		
+		enemy_update();
 		
 		snake_task();
-		
+
 		oam_hide_rest(spr_id);
 		snake_draw_task();
 #ifdef DEBUG

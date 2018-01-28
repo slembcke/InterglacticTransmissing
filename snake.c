@@ -13,6 +13,7 @@ struct {
     enum {UP=EVENT_UP, DOWN=EVENT_DW, LEFT=EVENT_LF, RIGHT=EVENT_RT, STILL} state;
     u32 sig_dir;
     u8 tiles_covered;
+    snake_status_t victory_condition;
     
     Level level;
 } state;
@@ -168,8 +169,13 @@ void find_dirs_avail(void) {
     }
 }
 
-bool snake_success(){
-    return (state.tiles_covered == (LEVEL_SIZE*LEVEL_SIZE - LEVEL_BLOCKERS - 1));
+snake_status_t snake_success(){
+    if (state.tiles_covered == (LEVEL_SIZE*LEVEL_SIZE - LEVEL_BLOCKERS - 1))
+        return SNAKE_WIN;
+    else if(state.victory_condition == SNAKE_LOSS)
+        return SNAKE_LOSS;
+    else
+        return IN_PROGRESS;
 }
 
 const char HEX[] = "0123456789ABCDEF";
@@ -184,15 +190,23 @@ u8 is_end(void) {
         state.head_y != state.level.end_y);
 }
 
+void signal_died(void) {
+    state.victory_condition = SNAKE_LOSS;
+}
+
 void snake_task(void) {
     spr_id = oam_meta_spr((state.head_x*16), (state.head_y*16), spr_id, state.sig_dir);
     if(state.head_x != state.level.start_x || 
         state.head_y != state.level.start_y)
     {
-        if((state.sig_str > '0') && 0==(state.throttle_ctr%64)) {
-            state.sig_str -= 1;
-            //TODO
-            // set_tile(state.head_x, state.head_y, state.sig_str); //~ radiowave
+        if((state.sig_str >= '0') && 0==(state.throttle_ctr%64)) {
+            if(state.sig_str == '0') {
+                signal_died();
+            }
+            else {
+                state.sig_str -= 1;
+                set_tile(0,0, state.sig_str); //~ radiowave
+            }
         }
     }
     state.throttle_ctr += 1;
@@ -297,6 +311,7 @@ void snake_init(void) {
     state.tiles_covered = 0;
     x=state.level.start_x;
     y=state.level.start_y;
+    state.victory_condition = IN_PROGRESS;
     state.head_x = x;
     state.head_y = y;
     DRAWTILE_GRID(x,y, 0xAA); //0xAA satelite
