@@ -238,7 +238,7 @@ void snake_init(void) {
     u16 row=0x01, mask=0;
     register u8 x=0,y=0;
     
-    memcpy(&state.level, LEVELS + 0, sizeof(state.level));
+    memcpy(&state.level, LEVELS + CURRENT_LEVEL, sizeof(state.level));
     state.level.start_x += OFFX;
     state.level.start_y += OFFY;
     state.level.end_x += OFFX;

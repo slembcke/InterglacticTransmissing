@@ -8,6 +8,7 @@
 #include "snake.h"
 
 bool TWO_PLAYER;
+u8 CURRENT_LEVEL;
 u8 i, ix, iy;
 u8 joy0, joy1;
 
@@ -57,6 +58,7 @@ TAIL_CALL game_loop_start(void){
 		joy1 = joy_read(1);
 		
 		if(snake_success()){
+			++CURRENT_LEVEL;
 			return end_level_sequence();
 		}
 		
