@@ -114,7 +114,7 @@ TAIL_CALL title_loop_start(void){
 			return game_loop_start();
 		} else if(JOY_DOWN(joy0)){
 			if(getDPAD){
-				sfx_play(0, 0);
+				sfx_play(SFX_GOOD, 1);
 				getDPAD = 0;
 				start_cursor = (start_cursor + 1); // modulus into valid range.
 				if(start_cursor > 2){
@@ -123,7 +123,7 @@ TAIL_CALL title_loop_start(void){
 			}
 		}else if(JOY_UP(joy0)){
 			if(getDPAD){
-				sfx_play(0, 0);
+				sfx_play(SFX_GOOD, 1);
 				getDPAD = 0;
 				start_cursor = (start_cursor - 1);
 				if(start_cursor > 2){

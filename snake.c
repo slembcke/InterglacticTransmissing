@@ -162,7 +162,7 @@ void set_state(u32 new_state)
 {
     state.state = new_state;
     if(new_state < STILL) {
-        sfx_play(2, 0);
+        sfx_play(SFX_MORSE, 1);
         state.dir = new_state;
     }
 }

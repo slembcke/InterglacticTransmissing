@@ -128,7 +128,7 @@ void fade_in(void){
 
 TAIL_CALL end_level_sequence(){
 	music_stop();
-	sfx_play(1, 0);
+	sfx_play(SFX_STINGER, 0);
 	delay(10);
 
 	// fade_out();

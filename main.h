@@ -33,6 +33,15 @@ extern u8 spr_id, joy0, joy1;
 #define SPR_FLIP_Y 128
 #define MSPRITE_END 128
 
+enum {
+	SFX_GOOD,
+	SFX_ENGINE,
+	SFX_SIGNAL,
+	SFX_BOOP,
+	SFX_MORSE,
+	SFX_STINGER,
+};
+
 typedef struct {
 	s16 dx, dy;
 	const u8 *msprite;
