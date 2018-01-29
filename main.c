@@ -131,9 +131,7 @@ TAIL_CALL end_level_sequence(){
 	sfx_play(SFX_STINGER, 0);
 	delay(10);
 
-	// fade_out();
-
-	return game_loop_start();
+	return level_intro_start();
 }
 
 static const u8 TEXT_PALETTE[] = {

@@ -77,6 +77,7 @@ extern Ship SHIP[2];
 
 void music_select(u8 song);
 TAIL_CALL chr_debug(void);
+TAIL_CALL level_intro_start(void);
 TAIL_CALL game_loop_start(void);
 
 void ship_init(void);
